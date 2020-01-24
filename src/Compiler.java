@@ -1,6 +1,6 @@
-import org.sablecc.sablecc.parser.*;
-import org.sablecc.sablecc.lexer.*;
-import org.sablecc.sablecc.node.*;
+import sc.parser.*;
+import sc.lexer.*;
+import sc.node.*;
 import java.io.*;
 //import sa.*;
 //import ts.*;
@@ -25,13 +25,13 @@ public class Compiler
 	}
 	catch (IOException e) {
 	    e.printStackTrace();
-	} 
+	}
 	try {
 	    // Create a Parser instance.
 	    Parser p = new Parser(new Lexer(br));
 	    // Parse the input.
 	    Start tree = p.parse();
-	    
+
 	    System.out.println("[SC]");
 	    tree.apply(new Sc2Xml(baseName));
 
@@ -60,9 +60,9 @@ public class Compiler
 	    System.out.println("[FLOW GRAPH SOLVE]");
 	    FgSolution fgSolution = new FgSolution(nasm, fg);
 	    fgSolution.affiche(baseName);*/
-	    
 
-	    
+
+
 	}
 	catch(Exception e){
 	    System.out.println(e.getMessage());
@@ -77,5 +77,5 @@ public class Compiler
 	}
 	return s;
     }
-    
+
 }

@@ -1,6 +1,6 @@
 import java.io.*;
-import org.sablecc.sablecc.analysis.*;
-import org.sablecc.sablecc.node.*;
+import sc.analysis.*;
+import sc.node.*;
 
 class Sc2Xml extends DepthFirstAdapter
 {
