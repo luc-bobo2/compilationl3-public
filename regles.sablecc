@@ -1,0 +1,154 @@
+Package sc;
+
+Helpers
+
+lettre = [['a' .. 'z'] + ['A' .. 'Z']];
+chiffre = [1 .. 9];
+alphanum = [lettre + chiffre];
+
+
+Tokens
+
+espaces = (' ' | 13 | 10)+;
+commentaire= '#' [[0 .. 0xffff] - [10 + 13]]* (10 | 13 | 10 13);
+
+ou = '|';
+et = '&';
+plus = '+';
+moins = '-';
+fois = '*';
+diviser = '\';
+exclamation = '!';
+ouvrante = '(';
+fermante = ')';
+egal = '=';
+inf = '<';
+nombre = chiffre+;
+si = 'si';
+alors = 'alors';
+sinon = 'sinon';
+tantque = 'tantque';
+faire = 'faire';
+entier = 'entier';
+retour = 'retour';
+lire = 'lire';
+ecrire = 'ecrire';
+point_virgule = ';';
+virgule = ',';
+croch_open = '[';
+croch_closed = ']';
+id = alphanum;
+acco_open = '{';
+acco_close = '}';
+
+
+Ignored Tokens
+
+espaces, commentaire;
+
+Productions
+
+// programme = optdecvar listedecfonc ;
+
+// GRAMMAIRE DES EXPRESSIONS ARITHMETIQUES 
+
+exp = 
+{ou} exp ou e6 |
+{e6} e6;
+
+e6 = 
+{et} e6 et e5 | 
+{e5} e5;
+
+e5 = 
+{egal} e5 egal e4 | 
+{inf} e5 inf e4 | 
+{e4} e4;
+
+e4 = 
+{plus} e4 plus e3 | 
+{moins} e4 moins e3 |
+{e3} e3;
+
+e3 = 
+{fois} e3 fois e2 | 
+{diviser} e3 diviser e2 | 
+{e2} e2;
+
+e2= 
+{excl} exclamation e1 | 
+{e1} e1;
+
+e1 = 
+{parenthese} ouvrante exp fermante | 
+{e0} e0;
+
+e0 = 
+{nombre} nombre | 
+{appelfct} appelfct |
+{lire} lire ouvrante fermante |
+{var} var;
+
+// GRAMMAIRE DES INSTRUCTIONS
+
+instr = 
+{if} siblock |
+{while} while |
+{retouri} retourinstr;
+
+listeinst =
+{linstrec} instr listeinst |
+{linstfinal} ;
+
+appelfct =
+{param} id ouvrante listeexp fermante point_virgule |
+{noparam} id ouvrante fermante point_virgule ;
+
+siblock =  
+{sinon} si exp alors instrblock sinonblock |
+{si} si exp alors instrblock ;
+
+sinonblock =
+{sinon} sinon instrblock;
+
+
+while = 
+{while} tantque exp faire instrblock;
+
+retourinstr = 
+{return} retour exp point_virgule;
+
+affect = var egal exp point_virgule ;
+
+instrblock = acco_open listeinst acco_close ;
+
+ecriture = ecrire ouvrante exp fermante point_virgule ;
+
+var =
+{tab} id croch_open exp croch_close |
+{simple} id ;
+
+
+// GRAMMAIRE DES DECLARATIONS DE VARIABLES ET FONCTIONS
+
+listeexp =
+{bis} exp listeexpbis |
+{vide} ;
+
+listeexpbis =
+{end} virgule exp listeexpbis |
+{vide} ;
+
+listeoptionelle =
+{option} listeexp point_virgule |
+{vide} ;
+
+declvar =
+{tab} entier id croch_open exp croch_closed point_virgule |
+{simple} entier id point_virgule;
+
+
+
+
+
+
