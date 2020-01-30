@@ -3,9 +3,9 @@ Package sc;
 Helpers
 
 lettre = [['a' .. 'z'] + ['A' .. 'Z']];
-chiffre = [1 .. 9];
+chiffre = ['0' .. '9'];
 alphanum = [lettre + chiffre];
-
+alpha = [lettre + ['_' + '$']];
 
 Tokens
 
@@ -18,12 +18,11 @@ plus = '+';
 moins = '-';
 fois = '*';
 diviser = '\';
-exclamation = '!';
+non = '!';
 ouvrante = '(';
 fermante = ')';
 egal = '=';
 inf = '<';
-nombre = chiffre+;
 si = 'si';
 alors = 'alors';
 sinon = 'sinon';
@@ -35,12 +34,12 @@ lire = 'lire';
 ecrire = 'ecrire';
 point_virgule = ';';
 virgule = ',';
-croch_open = '[';
-croch_closed = ']';
-id = alphanum;
 acco_open = '{';
 acco_close = '}';
-
+croch_open = '[';
+croch_closed = ']';
+nombre = chiffre+;
+id = alpha alphanum*;
 
 Ignored Tokens
 
@@ -49,6 +48,74 @@ espaces, commentaire;
 Productions
 
 // programme = optdecvar listedecfonc ;
+
+// GRAMMAIRE DES INSTRUCTIONS
+
+instr = 
+{if} siblock |
+{while} while |
+{retouri} retourinstr;
+
+listeinst =
+{linstrec} instr listeinst |
+{linstfinal};
+
+appelfct =
+{param} id ouvrante listeexp fermante point_virgule |
+{noparam} id ouvrante fermante point_virgule ;
+
+siblock =  
+{sinon} si exp alors instrblock sinonblock |
+{si} si exp alors instrblock ;
+
+sinonblock =
+{sinon} sinon instrblock;
+
+while = 
+{while} tantque exp faire instrblock;
+
+retourinstr = 
+{return} retour exp point_virgule;
+
+affect = 
+{affect} var egal exp point_virgule ;
+
+instrblock = 
+{blockinstr} acco_open listeinst acco_close ;
+
+ecriture = 
+{fctecrire} ecrire ouvrante exp fermante point_virgule ;
+
+
+// GRAMMAIRE DES DECLARATIONS DE VARIABLES ET FONCTIONS
+
+var =
+{tab} id croch_open exp croch_closed |
+{simple} id ;
+
+//listeexp =
+//{bis} exp listeexpbis |
+//{vide} ;
+
+//listeexpbis =
+//{end} virgule exp listeexpbis |
+//{vide} ;
+
+//listeoptionelle =
+//{option} listeexp point_virgule |
+//{vide} ;
+
+declvar =
+{tab} entier id croch_open nombre croch_closed point_virgule |
+{simple} entier id point_virgule;
+
+listeexp =	
+{recursif} exp bis|	
+{simple} exp ;	
+
+bis =	
+{end} virgule exp |	
+{recursif} virgule exp bis;
 
 // GRAMMAIRE DES EXPRESSIONS ARITHMETIQUES 
 
@@ -76,7 +143,7 @@ e3 =
 {e2} e2;
 
 e2= 
-{excl} exclamation e1 | 
+{excl} non e1 | 
 {e1} e1;
 
 e1 = 
@@ -84,71 +151,10 @@ e1 =
 {e0} e0;
 
 e0 = 
-{nombre} nombre | 
+{number} nombre | 
 {appelfct} appelfct |
 {lire} lire ouvrante fermante |
-{var} var;
-
-// GRAMMAIRE DES INSTRUCTIONS
-
-instr = 
-{if} siblock |
-{while} while |
-{retouri} retourinstr;
-
-listeinst =
-{linstrec} instr listeinst |
-{linstfinal} ;
-
-appelfct =
-{param} id ouvrante listeexp fermante point_virgule |
-{noparam} id ouvrante fermante point_virgule ;
-
-siblock =  
-{sinon} si exp alors instrblock sinonblock |
-{si} si exp alors instrblock ;
-
-sinonblock =
-{sinon} sinon instrblock;
-
-
-while = 
-{while} tantque exp faire instrblock;
-
-retourinstr = 
-{return} retour exp point_virgule;
-
-affect = var egal exp point_virgule ;
-
-instrblock = acco_open listeinst acco_close ;
-
-ecriture = ecrire ouvrante exp fermante point_virgule ;
-
-var =
-{tab} id croch_open exp croch_close |
-{simple} id ;
-
-
-// GRAMMAIRE DES DECLARATIONS DE VARIABLES ET FONCTIONS
-
-listeexp =
-{bis} exp listeexpbis |
-{vide} ;
-
-listeexpbis =
-{end} virgule exp listeexpbis |
-{vide} ;
-
-listeoptionelle =
-{option} listeexp point_virgule |
-{vide} ;
-
-declvar =
-{tab} entier id croch_open exp croch_closed point_virgule |
-{simple} entier id point_virgule;
-
-
-
+{variable} var;
 
 
 
