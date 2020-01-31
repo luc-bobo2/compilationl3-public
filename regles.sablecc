@@ -12,34 +12,40 @@ Tokens
 espaces = (' ' | 13 | 10)+;
 commentaire= '#' [[0 .. 0xffff] - [10 + 13]]* (10 | 13 | 10 13);
 
-ou = '|';
-et = '&';
 plus = '+';
 moins = '-';
 fois = '*';
 diviser = '\';
+
+ou = '|';
+et = '&';
 non = '!';
-ouvrante = '(';
-fermante = ')';
 egal = '=';
 inf = '<';
+
+point_virgule = ';';
+virgule = ',';
+ouvrante = '(';
+fermante = ')';
+acco_open = '{';
+acco_close = '}';
+croch_open = '[';
+croch_closed = ']';
+
 si = 'si';
 alors = 'alors';
 sinon = 'sinon';
 tantque = 'tantque';
 faire = 'faire';
-entier = 'entier';
 retour = 'retour';
+
+entier = 'entier';
 lire = 'lire';
 ecrire = 'ecrire';
-point_virgule = ';';
-virgule = ',';
-acco_open = '{';
-acco_close = '}';
-croch_open = '[';
-croch_closed = ']';
+
 nombre = chiffre+;
 id = alpha alphanum*;
+
 
 Ignored Tokens
 
@@ -47,43 +53,75 @@ espaces, commentaire;
 
 Productions
 
-// programme = optdecvar listedecfonc ;
+programme =
+{avecvar} optdecvar listedecfonc |
+{sansvar} listedecfonc;
+
+optdecvar = listedecvar point_virgule;
+
+listedecvar =
+{decvarldecvar} decvar listedecvarbis |
+{decvar} decvar;
+
+listedecvarbis =
+{decvarldecvar} virgule decvar listedecvarbis|
+{decvar} virgule decvar ;
+
+decvar =
+{decvarentier} entier id |
+{decvartableau} entier id croch_open nombre croch_closed ;
+
+listedecfonc =
+{ldecfoncrec} decfonc listedecfonc |
+{ldecfoncfinal} ;
+
+decfonc =
+{decvarinstr} id listeparam optdecvar instrblock |
+{instr} id listeparam instrblock ;
+
+listeparam =
+{sansparam} ouvrante fermante |
+{avecparam} ouvrante listedecvar fermante ;
+
 
 // GRAMMAIRE DES INSTRUCTIONS
 
-instr = 
+instr =
+{affect} affect |
+{blockinstr} instrblock |
+{appelfct} appelfct |
 {if} siblock |
 {while} while |
 {retouri} retourinstr;
 
-listeinst =
-{linstrec} instr listeinst |
+listeinstr =
+{linstrec} instr listeinstr |
 {linstfinal};
 
 appelfct =
 {param} id ouvrante listeexp fermante point_virgule |
 {noparam} id ouvrante fermante point_virgule ;
 
-siblock =  
+siblock =
 {sinon} si exp alors instrblock sinonblock |
 {si} si exp alors instrblock ;
 
 sinonblock =
 {sinon} sinon instrblock;
 
-while = 
+while =
 {while} tantque exp faire instrblock;
 
-retourinstr = 
+retourinstr =
 {return} retour exp point_virgule;
 
-affect = 
+affect =
 {affect} var egal exp point_virgule ;
 
-instrblock = 
-{blockinstr} acco_open listeinst acco_close ;
+instrblock =
+{blockinstr} acco_open listeinstr acco_close ;
 
-ecriture = 
+ecriture =
 {fctecrire} ecrire ouvrante exp fermante point_virgule ;
 
 
@@ -91,7 +129,7 @@ ecriture =
 
 var =
 {tab} id croch_open exp croch_closed |
-{simple} id ;
+{simple} id;
 
 //listeexp =
 //{bis} exp listeexpbis |
@@ -109,49 +147,50 @@ declvar =
 {tab} entier id croch_open nombre croch_closed point_virgule |
 {simple} entier id point_virgule;
 
-listeexp =	
-{recursif} exp bis|	
-{simple} exp ;	
+// Declaration liste d'expressions
+listeexp =
+{recursif} exp bis|
+{simple} exp;
 
-bis =	
-{end} virgule exp |	
+bis =
+{end} virgule exp |
 {recursif} virgule exp bis;
 
-// GRAMMAIRE DES EXPRESSIONS ARITHMETIQUES 
+// GRAMMAIRE DES EXPRESSIONS ARITHMETIQUES
 
-exp = 
+exp =
 {ou} exp ou e6 |
 {e6} e6;
 
-e6 = 
-{et} e6 et e5 | 
+e6 =
+{et} e6 et e5 |
 {e5} e5;
 
-e5 = 
-{egal} e5 egal e4 | 
-{inf} e5 inf e4 | 
+e5 =
+{egal} e5 egal e4 |
+{inf} e5 inf e4 |
 {e4} e4;
 
-e4 = 
-{plus} e4 plus e3 | 
+e4 =
+{plus} e4 plus e3 |
 {moins} e4 moins e3 |
 {e3} e3;
 
-e3 = 
-{fois} e3 fois e2 | 
-{diviser} e3 diviser e2 | 
+e3 =
+{fois} e3 fois e2 |
+{diviser} e3 diviser e2 |
 {e2} e2;
 
-e2= 
-{excl} non e1 | 
+e2=
+{excl} non e1 |
 {e1} e1;
 
-e1 = 
-{parenthese} ouvrante exp fermante | 
+e1 =
+{parenthese} ouvrante exp fermante |
 {e0} e0;
 
-e0 = 
-{number} nombre | 
+e0 =
+{number} nombre |
 {appelfct} appelfct |
 {lire} lire ouvrante fermante |
 {variable} var;
