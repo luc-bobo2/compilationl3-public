@@ -89,18 +89,24 @@ listeparam =
 instr =
 {affect} affect |
 {blockinstr} instrblock |
-{appelfct} appelfct |
+{appelfct} instrappel |
 {if} siblock |
 {while} while |
+{empty} instrvide |
+{ecrire} ecriture |
 {retouri} retourinstr;
 
 listeinstr =
 {linstrec} instr listeinstr |
 {linstfinal};
 
+instrvide = point_virgule;
+
+instrappel = appelfct point_virgule ;
+
 appelfct =
-{param} id ouvrante listeexp fermante point_virgule |
-{noparam} id ouvrante fermante point_virgule ;
+{param} id ouvrante listeexp fermante  |
+{noparam} id ouvrante fermante  ;
 
 siblock =
 {sinon} si exp alors instrblock sinonblock |
