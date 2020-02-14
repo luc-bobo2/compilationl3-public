@@ -15,7 +15,7 @@ commentaire= '#' [[0 .. 0xffff] - [10 + 13]]* (10 | 13 | 10 13);
 plus = '+';
 moins = '-';
 fois = '*';
-diviser = '\';
+diviser = '/';
 
 ou = '|';
 et = '&';
