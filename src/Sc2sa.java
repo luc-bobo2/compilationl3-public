@@ -259,34 +259,28 @@ public class Sc2sa extends DepthFirstAdapter {
     // Declaration d'une liste d'expressions
     @Override
     public void caseARecursifListeexp(ARecursifListeexp node) {
-        node.getExp().apply(this);
-        SaExp tete = ((SaExp) this.returnValue);
-        node.getBis().apply(this);
-        SaLExp queue = ((SaLExp) this.returnValue);
+        SaExp tete = (SaExp) apply(node.getExp());
+        SaLExp queue = (SaLExp) apply(node.getBis());
 
         this.returnValue = new SaLExp(tete, queue);
     }
 
     @Override
     public void caseASimpleListeexp(ASimpleListeexp node) {
-        node.getExp().apply(this);
-        SaExp tete = ((SaExp) this.returnValue);
+        SaExp tete = (SaExp) apply(node.getExp());
         this.returnValue = new SaLExp(tete, null);
     }
 
     @Override
     public void caseAEndBis(AEndBis node) {
-        node.getExp().apply(this);
-        SaExp tete = ((SaExp) this.returnValue);
+        SaExp tete = (SaExp) apply(node.getExp());
         this.returnValue = new SaLExp(tete, null);
     }
 
     @Override
     public void caseARecursifBis(ARecursifBis node) {
-        node.getExp().apply(this);
-        SaExp tete = ((SaExp) this.returnValue);
-        node.getBis().apply(this);
-        SaLExp queue = ((SaLExp) this.returnValue);
+        SaExp tete = (SaExp) apply(node.getExp());
+        SaLExp queue = (SaLExp) apply(node.getBis());
 
         this.returnValue = new SaLExp(tete, queue);
     }
@@ -294,138 +288,112 @@ public class Sc2sa extends DepthFirstAdapter {
     // GRAMMAIRE DES EXPRESSIONS ARITHMETIQUES
     @Override
     public void caseAOuExp(AOuExp node) {
-        SaExp op1;
-        SaExp op2;
-        node.getE6().apply(this);
-        op1 = (SaExp)this.returnValue;
-        node.getExp().apply(this);
-        op2 = (SaExp)this.returnValue;
+        SaExp op1 = (SaExp) apply(node.getExp());
+        SaExp op2 = (SaExp) apply(node.getE6());
+
         this.returnValue = new SaExpOr(op1, op2);
     }
 
     @Override
     public void caseAE6Exp(AE6Exp node) {
-        node.getE6().apply(this);
+        this.returnValue = apply(node.getE6());
     }
 
     @Override
     public void caseAEtE6(AEtE6 node) {
-        SaExp op1;
-        SaExp op2;
-        node.getE5().apply(this);
-        op1 = (SaExp)this.returnValue;
-        node.getE6().apply(this);
-        op2 = (SaExp)this.returnValue;
+        SaExp op1 = (SaExp) apply(node.getE6());
+        SaExp op2 = (SaExp) apply(node.getE5());
+
         this.returnValue = new SaExpAnd(op1, op2);
     }
 
     @Override
     public void caseAE5E6(AE5E6 node) {
-        node.getE5().apply(this);
+        this.returnValue = apply(node.getE5());
     }
 
     @Override
     public void caseAEgalE5(AEgalE5 node) {
-        SaExp op1;
-        SaExp op2;
-        node.getE4().apply(this);
-        op1 = (SaExp)this.returnValue;
-        node.getE5().apply(this);
-        op2 = (SaExp)this.returnValue;
+        SaExp op1 = (SaExp) apply(node.getE5());
+        SaExp op2 = (SaExp) apply(node.getE4());
+
         this.returnValue = new SaExpEqual(op1, op2);
     }
 
     @Override
     public void caseAInfE5(AInfE5 node) {
-        SaExp op1;
-        SaExp op2;
-        node.getE4().apply(this);
-        op1 = (SaExp)this.returnValue;
-        node.getE5().apply(this);
-        op2 = (SaExp)this.returnValue;
+        SaExp op1 = (SaExp) apply(node.getE5());
+        SaExp op2 = (SaExp) apply(node.getE4());
+
         this.returnValue = new SaExpInf(op1, op2);
     }
 
     @Override
     public void caseAE4E5(AE4E5 node) {
-        node.getE4().apply(this);
+        this.returnValue = apply(node.getE4());
     }
 
     @Override
     public void caseAPlusE4(APlusE4 node) {
-        SaExp op1;
-        SaExp op2;
-        node.getE3().apply(this);
-        op1 = (SaExp)this.returnValue;
-        node.getE4().apply(this);
-        op2 = (SaExp)this.returnValue;
+        SaExp op1 = (SaExp) apply(node.getE4());
+        SaExp op2 = (SaExp) apply(node.getE3());
+
         this.returnValue = new SaExpAdd(op1, op2);
     }
 
     @Override
     public void caseAMoinsE4(AMoinsE4 node) {
-        SaExp op1;
-        SaExp op2;
-        node.getE3().apply(this);
-        op1 = (SaExp)this.returnValue;
-        node.getE4().apply(this);
-        op2 = (SaExp)this.returnValue;
+        SaExp op1 = (SaExp) apply(node.getE4());
+        SaExp op2 = (SaExp) apply(node.getE3());
+
         this.returnValue = new SaExpSub(op1, op2);
     }
 
     @Override
     public void caseAE3E4(AE3E4 node) {
-        node.getE3().apply(this);
+        this.returnValue = apply(node.getE3());
     }
 
     @Override
     public void caseAFoisE3(AFoisE3 node) {
-        SaExp op1;
-        SaExp op2;
-        node.getE2().apply(this);
-        op1 = (SaExp)this.returnValue;
-        node.getE3().apply(this);
-        op2 = (SaExp)this.returnValue;
+        SaExp op1 = (SaExp) apply(node.getE3());
+        SaExp op2 = (SaExp) apply(node.getE2());
+
         this.returnValue = new SaExpMult(op1, op2);
     }
 
     @Override
     public void caseADiviserE3(ADiviserE3 node) {
-        SaExp op1;
-        SaExp op2;
-        node.getE2().apply(this);
-        op1 = (SaExp)this.returnValue;
-        node.getE3().apply(this);
-        op2 = (SaExp)this.returnValue;
+        SaExp op1 = (SaExp) apply(node.getE3());
+        SaExp op2 = (SaExp) apply(node.getE2());
+
         this.returnValue = new SaExpDiv(op1, op2);
     }
 
     @Override
     public void caseAE2E3(AE2E3 node) {
-        node.getE2().apply(this);
+        this.returnValue = apply(node.getE2());
     }
 
     @Override
     public void caseAExclE2(AExclE2 node) {
-        SaExp op1;
-        node.getE1().apply(this);
-        op1 = (SaExp)this.returnValue;
-        this.returnValue = new SaExpNot(op1);
+        SaExp op = (SaExp) apply(node.getE1());
+        this.returnValue = new SaExpNot(op);
     }
 
     @Override
     public void caseAE1E2(AE1E2 node) {
-        node.getE1().apply(this);
+        this.returnValue = apply(node.getE1());
     }
 
     @Override
     public void caseAParentheseE1(AParentheseE1 node) {
-        node.getExp().apply(this);
+        this.returnValue = apply(node.getExp());
     }
 
     @Override
     public void caseAE0E1(AE0E1 node) {
-        node.getE0().apply(this);
+        this.returnValue = apply(node.getE0());
     }
 
     @Override
@@ -435,10 +403,9 @@ public class Sc2sa extends DepthFirstAdapter {
 
     @Override
     public void caseAAppelfctE0(AAppelfctE0 node) {
-        SaAppel op1;
-        node.getAppelfct().apply(this);
-        op1 = (SaAppel) this.returnValue;
-        this.returnValue = new SaExpAppel(op1);
+        SaAppel appel = (SaAppel) apply(node.getAppelfct());
+
+        this.returnValue = new SaExpAppel(appel);
     }
 
     @Override
@@ -448,9 +415,8 @@ public class Sc2sa extends DepthFirstAdapter {
 
     @Override
     public void caseAVariableE0(AVariableE0 node) {
-        SaVar var1;
-        node.getVar().apply(this);
-        var1 = (SaVar)this.returnValue;
-        this.returnValue = new SaExpVar(var1);
+        SaVar var = (SaVar) apply(node.getVar());
+
+        this.returnValue = new SaExpVar(var);
     }
 }
