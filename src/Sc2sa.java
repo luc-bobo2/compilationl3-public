@@ -45,24 +45,24 @@ public class Sc2sa extends DepthFirstAdapter {
     // LISTE DE DECLARATION DE VARS
     @Override
     public void caseADecvarldecvarListedecvar(ADecvarldecvarListedecvar node) {
-        SaDecVar tete = (SaDecVar) apply(node.getDecvar());
+        SaDec tete = (SaDec) apply(node.getDecvar());
         SaLDec queue = (SaLDec) apply(node.getListedecvarbis());
         this.returnValue = new SaLDec(tete, queue);
     }
     @Override
     public void caseADecvarListedecvar(ADecvarListedecvar node) {
-        SaDecVar tete = (SaDecVar) apply(node.getDecvar());
+        SaDec tete = (SaDec) apply(node.getDecvar());
         this.returnValue = new SaLDec(tete, null);
     }
     @Override
     public void caseADecvarldecvarListedecvarbis(ADecvarldecvarListedecvarbis node) {
-        SaDecVar tete = (SaDecVar) apply(node.getDecvar());
+        SaDec tete = (SaDec) apply(node.getDecvar());
         SaLDec queue = (SaLDec) apply(node.getListedecvarbis());
         this.returnValue = new SaLDec(tete, queue);
     }
     @Override
     public void caseADecvarListedecvarbis(ADecvarListedecvarbis node) {
-        SaDecVar tete = (SaDecVar) apply(node.getDecvar());
+        SaDec tete = (SaDec) apply(node.getDecvar());
         this.returnValue = new SaLDec(tete, null);
     }
 
