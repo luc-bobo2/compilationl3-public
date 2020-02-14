@@ -45,19 +45,25 @@ public class Sc2sa extends DepthFirstAdapter {
     // LISTE DE DECLARATION DE VARS
     @Override
     public void caseADecvarldecvarListedecvar(ADecvarldecvarListedecvar node) {
-        // TODO
+        SaDecVar tete = (SaDecVar) apply(node.getDecvar());
+        SaLDec queue = (SaLDec) apply(node.getListedecvarbis());
+        this.returnValue = new SaLDec(tete, queue);
     }
     @Override
     public void caseADecvarListedecvar(ADecvarListedecvar node) {
-        // TODO
+        SaDecVar tete = (SaDecVar) apply(node.getDecvar());
+        this.returnValue = new SaLDec(tete, null);
     }
     @Override
     public void caseADecvarldecvarListedecvarbis(ADecvarldecvarListedecvarbis node) {
-        // TODO
+        SaDecVar tete = (SaDecVar) apply(node.getDecvar());
+        SaLDec queue = (SaLDec) apply(node.getListedecvarbis());
+        this.returnValue = new SaLDec(tete, queue);
     }
     @Override
     public void caseADecvarListedecvarbis(ADecvarListedecvarbis node) {
-        // TODO
+        SaDecVar tete = (SaDecVar) apply(node.getDecvar());
+        this.returnValue = new SaLDec(tete, null);
     }
 
     // DECLARATION VARIABLE
@@ -236,22 +242,6 @@ public class Sc2sa extends DepthFirstAdapter {
         SaExp exp = (SaExp) apply(node.getExp());
         this.returnValue = new SaInstEcriture(exp);
     }
-
-    // GRAMMAIRE DES DECLARATIONS DE VARIABLES
-
-    // DECLARATION VARIABLES
-    @Override
-    public void caseATabDeclvar(ATabDeclvar node) {
-        String nom = node.getId().getText();
-        int taille = Integer.parseInt(node.getNombre().getText());
-        this.returnValue = new SaDecTab(nom, taille);
-    }
-    @Override
-    public void caseASimpleDeclvar(ASimpleDeclvar node) {
-        String nom = node.getId().getText();
-        this.returnValue = new SaDecVar(nom);
-    }
-
 
     // APPEL VARIABLE
     @Override
