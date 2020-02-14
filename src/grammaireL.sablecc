@@ -137,10 +137,6 @@ var =
 {tab} id croch_open exp croch_closed |
 {simple} id;
 
-declvar =
-{tab} entier id croch_open nombre croch_closed point_virgule |
-{simple} entier id point_virgule;
-
 // Declaration liste d'expressions
 listeexp =
 {recursif} exp bis|
