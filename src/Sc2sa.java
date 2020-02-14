@@ -17,246 +17,291 @@ public class Sc2sa extends DepthFirstAdapter {
         return this.returnValue;
     }
 
+    // START
     @Override
-    public void caseASimpleDeclvar(ASimpleDeclvar node) {
-        int val = Integer.parseInt(node.getId().getText());
-        this.returnValue = new SaExpInt(val);
+    public void caseStart(Start node) {
+        apply(node.getPProgramme());
     }
 
+    // PROGRAMME
+    @Override
+    public void caseAAvecvarProgramme(AAvecvarProgramme node) {
+        SaLDec variables = (SaLDec) apply(node.getOptdecvar());
+        SaLDec fonctions = (SaLDec) apply(node.getListedecfonc());
+        this.returnValue = new SaProg(variables, fonctions);
+    }
+    @Override
+    public void caseASansvarProgramme(ASansvarProgramme node) {
+        SaLDec fonctions = (SaLDec) apply(node.getListedecfonc());
+        this.returnValue = new SaProg(null, fonctions);
+    }
+
+    // LISTE DES VARIABLES DU PROGRAMME
+    @Override
+    public void caseAOptdecvar(AOptdecvar node) {
+        apply(node.getListedecvar());
+    }
+
+    // LISTE DE DECLARATION DE VARS
+    @Override
+    public void caseADecvarldecvarListedecvar(ADecvarldecvarListedecvar node) {
+        // TODO
+    }
+    @Override
+    public void caseADecvarListedecvar(ADecvarListedecvar node) {
+        // TODO
+    }
+    @Override
+    public void caseADecvarldecvarListedecvarbis(ADecvarldecvarListedecvarbis node) {
+        // TODO
+    }
+    @Override
+    public void caseADecvarListedecvarbis(ADecvarListedecvarbis node) {
+        // TODO
+    }
+
+    // DECLARATION VARIABLE
+    @Override
+    public void caseADecvarentierDecvar(ADecvarentierDecvar node) {
+        this.returnValue = new SaDecVar(node.getId().getText());
+    }
+    @Override
+    public void caseADecvartableauDecvar(ADecvartableauDecvar node) {
+        String nom = node.getId().getText();
+        int taille = Integer.parseInt(node.getNombre().getText());
+        this.returnValue = new SaDecTab(nom, taille);
+    }
+
+    // LISTE DE DECLARATION DE FONCTIONS
+    @Override
+    public void caseALdecfoncrecListedecfonc(ALdecfoncrecListedecfonc node) {
+        SaDecFonc tete = (SaDecFonc) apply(node.getDecfonc());
+        SaLDec queue = (SaLDec) apply(node.getListedecfonc());
+        this.returnValue = new SaLDec(tete, queue);
+    }
+    @Override
+    public void caseALdecfoncfinalListedecfonc(ALdecfoncfinalListedecfonc node) {
+        this.returnValue = null;
+    }
+
+    // DECLARATION DE FONCTION
+    @Override
+    public void caseADecvarinstrDecfonc(ADecvarinstrDecfonc node) {
+        String nom = node.getId().getText();
+        SaLDec parametres = (SaLDec) apply(node.getListeparam());
+        SaLDec variables = (SaLDec) apply(node.getOptdecvar());
+        SaInstBloc corps = (SaInstBloc) apply(node.getInstrblock());
+        this.returnValue = new SaDecFonc(nom, parametres, variables, corps);
+    }
+    @Override
+    public void caseAInstrDecfonc(AInstrDecfonc node) {
+        String nom = node.getId().getText();
+        SaLDec parametres = (SaLDec) apply(node.getListeparam());
+        SaInstBloc corps = (SaInstBloc) apply(node.getInstrblock());
+        this.returnValue = new SaDecFonc(nom, parametres, null, corps);
+    }
+
+    @Override
+    public void caseASansparamListeparam(ASansparamListeparam node) {
+        this.returnValue = null;
+    }
+    @Override
+    public void caseAAvecparamListeparam(AAvecparamListeparam node) {
+        this.returnValue = apply(node.getListedecvar());
+    }
+
+    // GRAMMAIRE DES INSTRUCTIONS
+    @Override
+    public void caseAAffectInstr(AAffectInstr node) {
+        apply(node.getAffect());
+    }
+    @Override
+    public void caseABlockinstrInstr(ABlockinstrInstr node) {
+        apply(node.getInstrblock());
+    }
+    @Override
+    public void caseAAppelfctInstr(AAppelfctInstr node) {
+        apply(node.getInstrappel());
+    }
+    @Override
+    public void caseAIfInstr(AIfInstr node) {
+        apply(node.getSiblock());
+    }
+    @Override
+    public void caseAWhileInstr(AWhileInstr node) {
+        apply(node.getWhile());
+    }
+    @Override
+    public void caseAEmptyInstr(AEmptyInstr node) {
+        apply(node.getInstrvide());
+    }
+    @Override
+    public void caseAEcrireInstr(AEcrireInstr node) {
+        apply(node.getEcriture());
+    }
+    @Override
+    public void caseARetouriInstr(ARetouriInstr node) {
+        apply(node.getRetourinstr());
+    }
+
+    // LISTE D'INSTRUCTIONS
+    @Override
+    public void caseALinstrecListeinstr(ALinstrecListeinstr node) {
+        SaInst tete = (SaInst) apply(node.getInstr());
+        SaLInst queue = (SaLInst) apply(node.getListeinstr());
+        this.returnValue = new SaLInst(tete, queue);
+    }
+    @Override
+    public void caseALinstfinalListeinstr(ALinstfinalListeinstr node) {
+        this.returnValue = null;
+    }
+
+    // INSTRUCTION VIDE
+    @Override
+    public void caseAInstrvide(AInstrvide node) {
+        this.returnValue = null;
+    }
+
+    // INSTRUCTION APPEL
+    @Override
+    public void caseAInstrappel(AInstrappel node) {
+        this.returnValue = apply(node.getAppelfct());
+    }
+
+    // INSTRUCTION APPEL DE FONCTION
+    @Override
+    public void caseAParamAppelfct(AParamAppelfct node) {
+        String nom = node.getId().getText();
+        SaLExp listeExp = (SaLExp) apply(node.getListeexp());
+        this.returnValue = new SaAppel(nom, listeExp);
+    }
+    @Override
+    public void caseANoparamAppelfct(ANoparamAppelfct node) {
+        String nom = node.getId().getText();
+        this.returnValue = new SaAppel(nom, null);
+    }
+
+    // INSTRUCTION SINON
+    @Override
+    public void caseASinonSiblock(ASinonSiblock node) {
+        SaExp test = (SaExp) apply(node.getExp());
+        SaInstBloc si = (SaInstBloc) apply(node.getInstrblock());
+        SaInstBloc sinon = (SaInstBloc) apply(node.getSinonblock());
+        this.returnValue = new SaInstSi(test, si, sinon);
+    }
+    @Override
+    public void caseASiSiblock(ASiSiblock node) {
+        SaExp test = (SaExp) apply(node.getExp());
+        SaInstBloc si = (SaInstBloc) apply(node.getInstrblock());
+        this.returnValue = new SaInstSi(test, si, null);
+    }
+    @Override
+    public void caseASinonSinonblock(ASinonSinonblock node) {
+        this.returnValue = apply(node.getInstrblock());
+    }
+
+    // INSTRUCTION TANT QUE
+    @Override
+    public void caseAWhileWhile(AWhileWhile node) {
+        SaExp test = (SaExp) apply(node.getExp());
+        SaInstBloc faire = (SaInstBloc) apply(node.getInstrblock());
+        this.returnValue = new SaInstTantQue(test, faire);
+    }
+
+    // INSTRUCTION RETOUR
+    @Override
+    public void caseAReturnRetourinstr(AReturnRetourinstr node) {
+        SaExp val = (SaExp) apply(node.getExp());
+        this.returnValue = new SaInstRetour(val);
+    }
+
+    // INSTRUCTION AFFECTATION
+    @Override
+    public void caseAAffectAffect(AAffectAffect node) {
+        SaVar var = (SaVar) apply(node.getVar());
+        SaExp val = (SaExp) apply(node.getExp());
+        this.returnValue = new SaInstAffect(var, val);
+    }
+
+    // BLOC D'INSTRUCTIONS
+    @Override
+    public void caseABlockinstrInstrblock(ABlockinstrInstrblock node) {
+        SaLInst listeInstr = (SaLInst) apply(node.getListeinstr());
+        this.returnValue = new SaInstBloc(listeInstr);
+    }
+
+    // INSTRUCTION APPEL ecrire()
     @Override
     public void caseAFctecrireEcriture(AFctecrireEcriture node) {
         SaExp exp = (SaExp) apply(node.getExp());
         this.returnValue = new SaInstEcriture(exp);
     }
 
-    /*
-        PLUS FONCTIONNEL
-     */
+    // GRAMMAIRE DES DECLARATIONS DE VARIABLES
 
-    @Override
-    public void caseStart(Start node) {
-        apply(node.getPProgramme());
-    }
-
-    @Override
-    public void caseAAvecvarProgramme(AAvecvarProgramme node) {
-        super.caseAAvecvarProgramme(node);
-    }
-
-    @Override
-    public void caseASansvarProgramme(ASansvarProgramme node) {
-        super.caseASansvarProgramme(node);
-    }
-
-    @Override
-    public void caseAOptdecvar(AOptdecvar node) {
-        super.caseAOptdecvar(node);
-    }
-
-    @Override
-    public void caseADecvarldecvarListedecvar(ADecvarldecvarListedecvar node) {
-        super.caseADecvarldecvarListedecvar(node);
-    }
-
-    @Override
-    public void caseADecvarListedecvar(ADecvarListedecvar node) {
-        super.caseADecvarListedecvar(node);
-    }
-
-    @Override
-    public void caseADecvarldecvarListedecvarbis(ADecvarldecvarListedecvarbis node) {
-        super.caseADecvarldecvarListedecvarbis(node);
-    }
-
-    @Override
-    public void caseADecvarListedecvarbis(ADecvarListedecvarbis node) {
-        super.caseADecvarListedecvarbis(node);
-    }
-
-    @Override
-    public void caseADecvarentierDecvar(ADecvarentierDecvar node) {
-        super.caseADecvarentierDecvar(node);
-    }
-
-    @Override
-    public void caseADecvartableauDecvar(ADecvartableauDecvar node) {
-        super.caseADecvartableauDecvar(node);
-    }
-
-    @Override
-    public void caseALdecfoncrecListedecfonc(ALdecfoncrecListedecfonc node) {
-        super.caseALdecfoncrecListedecfonc(node);
-    }
-
-    @Override
-    public void caseALdecfoncfinalListedecfonc(ALdecfoncfinalListedecfonc node) {
-        super.caseALdecfoncfinalListedecfonc(node);
-    }
-
-    @Override
-    public void caseADecvarinstrDecfonc(ADecvarinstrDecfonc node) {
-        super.caseADecvarinstrDecfonc(node);
-    }
-
-    @Override
-    public void caseAInstrDecfonc(AInstrDecfonc node) {
-        super.caseAInstrDecfonc(node);
-    }
-
-    @Override
-    public void caseASansparamListeparam(ASansparamListeparam node) {
-        super.caseASansparamListeparam(node);
-    }
-
-    @Override
-    public void caseAAvecparamListeparam(AAvecparamListeparam node) {
-        super.caseAAvecparamListeparam(node);
-    }
-
-    @Override
-    public void caseAAffectInstr(AAffectInstr node) {
-        super.caseAAffectInstr(node);
-    }
-
-    @Override
-    public void caseABlockinstrInstr(ABlockinstrInstr node) {
-        super.caseABlockinstrInstr(node);
-    }
-
-    @Override
-    public void caseAAppelfctInstr(AAppelfctInstr node) {
-        super.caseAAppelfctInstr(node);
-    }
-
-    @Override
-    public void caseAIfInstr(AIfInstr node) {
-        super.caseAIfInstr(node);
-    }
-
-    @Override
-    public void caseAWhileInstr(AWhileInstr node) {
-        super.caseAWhileInstr(node);
-    }
-
-    @Override
-    public void caseAEmptyInstr(AEmptyInstr node) {
-        super.caseAEmptyInstr(node);
-    }
-
-    @Override
-    public void caseAEcrireInstr(AEcrireInstr node) {
-        super.caseAEcrireInstr(node);
-    }
-
-    @Override
-    public void caseARetouriInstr(ARetouriInstr node) {
-        super.caseARetouriInstr(node);
-    }
-
-    @Override
-    public void caseALinstrecListeinstr(ALinstrecListeinstr node) {
-        super.caseALinstrecListeinstr(node);
-    }
-
-    @Override
-    public void caseALinstfinalListeinstr(ALinstfinalListeinstr node) {
-        super.caseALinstfinalListeinstr(node);
-    }
-
-    @Override
-    public void caseAInstrvide(AInstrvide node) {
-        super.caseAInstrvide(node);
-    }
-
-    @Override
-    public void caseAInstrappel(AInstrappel node) {
-        super.caseAInstrappel(node);
-    }
-
-    @Override
-    public void caseAParamAppelfct(AParamAppelfct node) {
-        super.caseAParamAppelfct(node);
-    }
-
-    @Override
-    public void caseANoparamAppelfct(ANoparamAppelfct node) {
-        super.caseANoparamAppelfct(node);
-    }
-
-    @Override
-    public void caseASinonSiblock(ASinonSiblock node) {
-        super.caseASinonSiblock(node);
-    }
-
-    @Override
-    public void caseASiSiblock(ASiSiblock node) {
-        super.caseASiSiblock(node);
-    }
-
-    @Override
-    public void caseASinonSinonblock(ASinonSinonblock node) {
-        super.caseASinonSinonblock(node);
-    }
-
-    @Override
-    public void caseAWhileWhile(AWhileWhile node) {
-        super.caseAWhileWhile(node);
-    }
-
-    @Override
-    public void caseAReturnRetourinstr(AReturnRetourinstr node) {
-        super.caseAReturnRetourinstr(node);
-    }
-
-    @Override
-    public void caseAAffectAffect(AAffectAffect node) {
-        super.caseAAffectAffect(node);
-    }
-
-    @Override
-    public void caseABlockinstrInstrblock(ABlockinstrInstrblock node) {
-        super.caseABlockinstrInstrblock(node);
-    }
-
-
-
-    @Override
-    public void caseATabVar(ATabVar node) {
-        super.caseATabVar(node);
-    }
-
-    @Override
-    public void caseASimpleVar(ASimpleVar node) {
-        super.caseASimpleVar(node);
-    }
-
+    // DECLARATION VARIABLES
     @Override
     public void caseATabDeclvar(ATabDeclvar node) {
-        super.caseATabDeclvar(node);
+        String nom = node.getId().getText();
+        int taille = Integer.parseInt(node.getNombre().getText());
+        this.returnValue = new SaDecTab(nom, taille);
+    }
+    @Override
+    public void caseASimpleDeclvar(ASimpleDeclvar node) {
+        String nom = node.getId().getText();
+        this.returnValue = new SaDecVar(nom);
     }
 
 
+    // APPEL VARIABLE
+    @Override
+    public void caseASimpleVar(ASimpleVar node) {
+        String nom = node.getId().getText();
+        this.returnValue = new SaVarSimple(nom);
+    }
+    @Override
+    public void caseATabVar(ATabVar node) {
+        String nom = node.getId().getText();
+        SaExp exp = (SaExp) apply(node.getExp());
+        this.returnValue = new SaVarIndicee(nom, exp);
+    }
 
+    // Declaration d'une liste d'expressions
     @Override
     public void caseARecursifListeexp(ARecursifListeexp node) {
-        super.caseARecursifListeexp(node);
+        node.getExp().apply(this);
+        SaExp tete = ((SaExp) this.returnValue);
+        node.getBis().apply(this);
+        SaLExp queue = ((SaLExp) this.returnValue);
+
+        this.returnValue = new SaLExp(tete, queue);
     }
 
     @Override
     public void caseASimpleListeexp(ASimpleListeexp node) {
-        super.caseASimpleListeexp(node);
+        node.getExp().apply(this);
+        SaExp tete = ((SaExp) this.returnValue);
+        this.returnValue = new SaLExp(tete, null);
     }
 
     @Override
     public void caseAEndBis(AEndBis node) {
-        super.caseAEndBis(node);
+        node.getExp().apply(this);
+        SaExp tete = ((SaExp) this.returnValue);
+        this.returnValue = new SaLExp(tete, null);
     }
 
     @Override
     public void caseARecursifBis(ARecursifBis node) {
-        super.caseARecursifBis(node);
+        node.getExp().apply(this);
+        SaExp tete = ((SaExp) this.returnValue);
+        node.getBis().apply(this);
+        SaLExp queue = ((SaLExp) this.returnValue);
+
+        this.returnValue = new SaLExp(tete, queue);
     }
 
+    // GRAMMAIRE DES EXPRESSIONS ARITHMETIQUES
     @Override
     public void caseAOuExp(AOuExp node) {
         SaExp op1;
@@ -391,6 +436,11 @@ public class Sc2sa extends DepthFirstAdapter {
     @Override
     public void caseAE0E1(AE0E1 node) {
         node.getE0().apply(this);
+    }
+
+    @Override
+    public void caseANumberE0(ANumberE0 node) {
+        this.returnValue = new SaExpInt(Integer.parseInt(node.getNombre().getText()));
     }
 
     @Override
