@@ -53,12 +53,15 @@ espaces, commentaire;
 
 Productions
 
+// Définition du programme
 programme =
 {avecvar} optdecvar listedecfonc |
 {sansvar} listedecfonc;
 
+// Liste des var globale du programme
 optdecvar = listedecvar point_virgule;
 
+// Liste de declarations de vars
 listedecvar =
 {decvarldecvar} decvar listedecvarbis |
 {decvar} decvar;
@@ -67,25 +70,28 @@ listedecvarbis =
 {decvarldecvar} virgule decvar listedecvarbis|
 {decvar} virgule decvar ;
 
+// Declaration d'une variable
 decvar =
 {decvarentier} entier id |
 {decvartableau} entier id croch_open nombre croch_closed ;
 
+// Liste de declarations de fonctions
 listedecfonc =
 {ldecfoncrec} decfonc listedecfonc |
 {ldecfoncfinal} ;
 
+// Declaration d'une fonction
 decfonc =
 {decvarinstr} id listeparam optdecvar instrblock |
 {instr} id listeparam instrblock ;
 
+// Liste des paramètre de la déclaration d'une fonction
 listeparam =
 {sansparam} ouvrante fermante |
 {avecparam} ouvrante listedecvar fermante ;
 
 
-// GRAMMAIRE DES INSTRUCTIONS
-
+// Les différentes instructions possibles
 instr =
 {affect} affect |
 {blockinstr} instrblock |
@@ -96,18 +102,23 @@ instr =
 {ecrire} ecriture |
 {retouri} retourinstr;
 
+// Liste d'instructions
 listeinstr =
 {linstrec} instr listeinstr |
 {linstfinal};
 
+// Instruction vide
 instrvide = point_virgule;
 
+// Instruction d'appel de fonction
 instrappel = appelfct point_virgule ;
 
+// Appel d'une  fonction
 appelfct =
 {param} id ouvrante listeexp fermante  |
 {noparam} id ouvrante fermante  ;
 
+// Instruction SI ALORS SINON
 siblock =
 {sinon} si exp alors instrblock sinonblock |
 {si} si exp alors instrblock ;
@@ -115,24 +126,29 @@ siblock =
 sinonblock =
 {sinon} sinon instrblock;
 
+// Instruction TANT QUE
 while =
 {while} tantque exp faire instrblock;
 
+// Instruction RETOUR
 retourinstr =
 {return} retour exp point_virgule;
 
+// Instruction d'affectation
 affect =
 {affect} var egal exp point_virgule ;
 
+// Bloc d'instructions
 instrblock =
 {blockinstr} acco_open listeinstr acco_close ;
 
+// Instruction d'appel à ECRIRE
 ecriture =
 {fctecrire} ecrire ouvrante exp fermante point_virgule ;
 
 
 // GRAMMAIRE DES DECLARATIONS DE VARIABLES ET FONCTIONS
-
+// Appel d'une variable
 var =
 {tab} id croch_open exp croch_closed |
 {simple} id;
@@ -146,8 +162,8 @@ bis =
 {end} virgule exp |
 {recursif} virgule exp bis;
 
-// GRAMMAIRE DES EXPRESSIONS ARITHMETIQUES
 
+// Expressions arithmétiques
 exp =
 {ou} exp ou e6 |
 {e6} e6;

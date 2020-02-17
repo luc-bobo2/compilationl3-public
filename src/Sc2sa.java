@@ -5,13 +5,17 @@ import sc.node.*;
 public class Sc2sa extends DepthFirstAdapter {
     private SaNode returnValue;
 
-    /**
-     * FONCTIONNEL NE PAS SUPPRIMER JUSQUA PLUS FONCTIONNEL
-     */
     public SaNode getRoot() {
         return this.returnValue;
     }
 
+    /**
+     * Wrapper to explore a node.
+     * Allow to save a bunch of code and time.
+     *
+     * @param sc The node to explore
+     * @return The "returnValue" content
+     */
     private SaNode apply(Switchable sc) {
         sc.apply(this);
         return this.returnValue;
@@ -23,7 +27,7 @@ public class Sc2sa extends DepthFirstAdapter {
         apply(node.getPProgramme());
     }
 
-    // PROGRAMME
+    // Définition du programme
     @Override
     public void caseAAvecvarProgramme(AAvecvarProgramme node) {
         SaLDec variables = (SaLDec) apply(node.getOptdecvar());
@@ -36,13 +40,13 @@ public class Sc2sa extends DepthFirstAdapter {
         this.returnValue = new SaProg(null, fonctions);
     }
 
-    // LISTE DES VARIABLES DU PROGRAMME
+    // Liste des var globale du programme
     @Override
     public void caseAOptdecvar(AOptdecvar node) {
         apply(node.getListedecvar());
     }
 
-    // LISTE DE DECLARATION DE VARS
+    // Liste de declarations de vars
     @Override
     public void caseADecvarldecvarListedecvar(ADecvarldecvarListedecvar node) {
         SaDec tete = (SaDec) apply(node.getDecvar());
@@ -66,7 +70,7 @@ public class Sc2sa extends DepthFirstAdapter {
         this.returnValue = new SaLDec(tete, null);
     }
 
-    // DECLARATION VARIABLE
+    // Declaration d'une variable
     @Override
     public void caseADecvarentierDecvar(ADecvarentierDecvar node) {
         this.returnValue = new SaDecVar(node.getId().getText());
@@ -78,7 +82,7 @@ public class Sc2sa extends DepthFirstAdapter {
         this.returnValue = new SaDecTab(nom, taille);
     }
 
-    // LISTE DE DECLARATION DE FONCTIONS
+    // Liste de declarations de fonctions
     @Override
     public void caseALdecfoncrecListedecfonc(ALdecfoncrecListedecfonc node) {
         SaDecFonc tete = (SaDecFonc) apply(node.getDecfonc());
@@ -90,7 +94,7 @@ public class Sc2sa extends DepthFirstAdapter {
         this.returnValue = null;
     }
 
-    // DECLARATION DE FONCTION
+    // Declaration d'une fonction
     @Override
     public void caseADecvarinstrDecfonc(ADecvarinstrDecfonc node) {
         String nom = node.getId().getText();
@@ -107,6 +111,7 @@ public class Sc2sa extends DepthFirstAdapter {
         this.returnValue = new SaDecFonc(nom, parametres, null, corps);
     }
 
+    // Liste des paramètre de la déclaration d'une fonction
     @Override
     public void caseASansparamListeparam(ASansparamListeparam node) {
         this.returnValue = null;
@@ -116,7 +121,8 @@ public class Sc2sa extends DepthFirstAdapter {
         this.returnValue = apply(node.getListedecvar());
     }
 
-    // GRAMMAIRE DES INSTRUCTIONS
+
+    // Les différentes instructions possibles
     @Override
     public void caseAAffectInstr(AAffectInstr node) {
         apply(node.getAffect());
@@ -150,7 +156,7 @@ public class Sc2sa extends DepthFirstAdapter {
         apply(node.getRetourinstr());
     }
 
-    // LISTE D'INSTRUCTIONS
+    // Liste d'instructions
     @Override
     public void caseALinstrecListeinstr(ALinstrecListeinstr node) {
         SaInst tete = (SaInst) apply(node.getInstr());
@@ -162,19 +168,19 @@ public class Sc2sa extends DepthFirstAdapter {
         this.returnValue = null;
     }
 
-    // INSTRUCTION VIDE
+    // Instruction vide
     @Override
     public void caseAInstrvide(AInstrvide node) {
         this.returnValue = null;
     }
 
-    // INSTRUCTION APPEL
+    // Instruction d'appel de fonction
     @Override
     public void caseAInstrappel(AInstrappel node) {
         this.returnValue = apply(node.getAppelfct());
     }
 
-    // INSTRUCTION APPEL DE FONCTION
+    // Appel d'une  fonction
     @Override
     public void caseAParamAppelfct(AParamAppelfct node) {
         String nom = node.getId().getText();
@@ -187,7 +193,7 @@ public class Sc2sa extends DepthFirstAdapter {
         this.returnValue = new SaAppel(nom, null);
     }
 
-    // INSTRUCTION SINON
+    // Instruction SI ALORS SINON
     @Override
     public void caseASinonSiblock(ASinonSiblock node) {
         SaExp test = (SaExp) apply(node.getExp());
@@ -206,7 +212,7 @@ public class Sc2sa extends DepthFirstAdapter {
         this.returnValue = apply(node.getInstrblock());
     }
 
-    // INSTRUCTION TANT QUE
+    // Instruction TANT QUE
     @Override
     public void caseAWhileWhile(AWhileWhile node) {
         SaExp test = (SaExp) apply(node.getExp());
@@ -214,14 +220,14 @@ public class Sc2sa extends DepthFirstAdapter {
         this.returnValue = new SaInstTantQue(test, faire);
     }
 
-    // INSTRUCTION RETOUR
+    // Instruction RETOUR
     @Override
     public void caseAReturnRetourinstr(AReturnRetourinstr node) {
         SaExp val = (SaExp) apply(node.getExp());
         this.returnValue = new SaInstRetour(val);
     }
 
-    // INSTRUCTION AFFECTATION
+    // Instruction d'affectation
     @Override
     public void caseAAffectAffect(AAffectAffect node) {
         SaVar var = (SaVar) apply(node.getVar());
@@ -229,21 +235,23 @@ public class Sc2sa extends DepthFirstAdapter {
         this.returnValue = new SaInstAffect(var, val);
     }
 
-    // BLOC D'INSTRUCTIONS
+    // Bloc d'instructions
     @Override
     public void caseABlockinstrInstrblock(ABlockinstrInstrblock node) {
         SaLInst listeInstr = (SaLInst) apply(node.getListeinstr());
         this.returnValue = new SaInstBloc(listeInstr);
     }
 
-    // INSTRUCTION APPEL ecrire()
+    // Instruction d'appel à ECRIRE
     @Override
     public void caseAFctecrireEcriture(AFctecrireEcriture node) {
         SaExp exp = (SaExp) apply(node.getExp());
         this.returnValue = new SaInstEcriture(exp);
     }
 
-    // APPEL VARIABLE
+
+    // GRAMMAIRE DES DECLARATIONS DE VARIABLES ET FONCTIONS
+    // Appel d'une variable
     @Override
     public void caseASimpleVar(ASimpleVar node) {
         String nom = node.getId().getText();
@@ -264,19 +272,16 @@ public class Sc2sa extends DepthFirstAdapter {
 
         this.returnValue = new SaLExp(tete, queue);
     }
-
     @Override
     public void caseASimpleListeexp(ASimpleListeexp node) {
         SaExp tete = (SaExp) apply(node.getExp());
         this.returnValue = new SaLExp(tete, null);
     }
-
     @Override
     public void caseAEndBis(AEndBis node) {
         SaExp tete = (SaExp) apply(node.getExp());
         this.returnValue = new SaLExp(tete, null);
     }
-
     @Override
     public void caseARecursifBis(ARecursifBis node) {
         SaExp tete = (SaExp) apply(node.getExp());
@@ -285,7 +290,8 @@ public class Sc2sa extends DepthFirstAdapter {
         this.returnValue = new SaLExp(tete, queue);
     }
 
-    // GRAMMAIRE DES EXPRESSIONS ARITHMETIQUES
+
+    // Expressions arithmétiques
     @Override
     public void caseAOuExp(AOuExp node) {
         SaExp op1 = (SaExp) apply(node.getExp());
@@ -293,7 +299,6 @@ public class Sc2sa extends DepthFirstAdapter {
 
         this.returnValue = new SaExpOr(op1, op2);
     }
-
     @Override
     public void caseAE6Exp(AE6Exp node) {
         this.returnValue = apply(node.getE6());
@@ -306,7 +311,6 @@ public class Sc2sa extends DepthFirstAdapter {
 
         this.returnValue = new SaExpAnd(op1, op2);
     }
-
     @Override
     public void caseAE5E6(AE5E6 node) {
         this.returnValue = apply(node.getE5());
@@ -319,7 +323,6 @@ public class Sc2sa extends DepthFirstAdapter {
 
         this.returnValue = new SaExpEqual(op1, op2);
     }
-
     @Override
     public void caseAInfE5(AInfE5 node) {
         SaExp op1 = (SaExp) apply(node.getE5());
@@ -327,7 +330,6 @@ public class Sc2sa extends DepthFirstAdapter {
 
         this.returnValue = new SaExpInf(op1, op2);
     }
-
     @Override
     public void caseAE4E5(AE4E5 node) {
         this.returnValue = apply(node.getE4());
@@ -340,7 +342,6 @@ public class Sc2sa extends DepthFirstAdapter {
 
         this.returnValue = new SaExpAdd(op1, op2);
     }
-
     @Override
     public void caseAMoinsE4(AMoinsE4 node) {
         SaExp op1 = (SaExp) apply(node.getE4());
@@ -348,7 +349,6 @@ public class Sc2sa extends DepthFirstAdapter {
 
         this.returnValue = new SaExpSub(op1, op2);
     }
-
     @Override
     public void caseAE3E4(AE3E4 node) {
         this.returnValue = apply(node.getE3());
@@ -361,7 +361,6 @@ public class Sc2sa extends DepthFirstAdapter {
 
         this.returnValue = new SaExpMult(op1, op2);
     }
-
     @Override
     public void caseADiviserE3(ADiviserE3 node) {
         SaExp op1 = (SaExp) apply(node.getE3());
@@ -369,7 +368,6 @@ public class Sc2sa extends DepthFirstAdapter {
 
         this.returnValue = new SaExpDiv(op1, op2);
     }
-
     @Override
     public void caseAE2E3(AE2E3 node) {
         this.returnValue = apply(node.getE2());
@@ -380,7 +378,6 @@ public class Sc2sa extends DepthFirstAdapter {
         SaExp op = (SaExp) apply(node.getE1());
         this.returnValue = new SaExpNot(op);
     }
-
     @Override
     public void caseAE1E2(AE1E2 node) {
         this.returnValue = apply(node.getE1());
@@ -390,7 +387,6 @@ public class Sc2sa extends DepthFirstAdapter {
     public void caseAParentheseE1(AParentheseE1 node) {
         this.returnValue = apply(node.getExp());
     }
-
     @Override
     public void caseAE0E1(AE0E1 node) {
         this.returnValue = apply(node.getE0());
@@ -400,19 +396,16 @@ public class Sc2sa extends DepthFirstAdapter {
     public void caseANumberE0(ANumberE0 node) {
         this.returnValue = new SaExpInt(Integer.parseInt(node.getNombre().getText()));
     }
-
     @Override
     public void caseAAppelfctE0(AAppelfctE0 node) {
         SaAppel appel = (SaAppel) apply(node.getAppelfct());
 
         this.returnValue = new SaExpAppel(appel);
     }
-
     @Override
     public void caseALireE0(ALireE0 node) {
         this.returnValue = new SaExpLire();
     }
-
     @Override
     public void caseAVariableE0(AVariableE0 node) {
         SaVar var = (SaVar) apply(node.getVar());
