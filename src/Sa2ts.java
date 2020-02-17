@@ -1,5 +1,6 @@
 import sa.*;
 import ts.Ts;
+import ts.TsItemVar;
 
 public class Sa2ts extends SaDepthFirstVisitor <Void> {
     private Ts tableGlobale;
@@ -38,6 +39,7 @@ public class Sa2ts extends SaDepthFirstVisitor <Void> {
             defaultIn(node);
 
             Ts tableLocale = new Ts();
+
             // Adding the function params
             SaDec param;
             SaLDec paramsList = node.getParametres();
@@ -48,21 +50,11 @@ public class Sa2ts extends SaDepthFirstVisitor <Void> {
                 } while ((paramsList = paramsList.getQueue()) != null);
             }
 
-            SaDec var;
-            SaLDec varList = node.getVariable();
-            if (varList != null) {
-
-                while (true) {
-                    var = varList.getTete();
-                    if (var != null) {
-                        if (var instanceof SaDecVar)
-                            tableLocale.addVar(var.getNom(), 1);
-                        else
-                            tableLocale.addVar(var.getNom(), ((SaDecTab) var).getTaille());
-                    }
-
-                    varList = varList.getQueue();
-                    if (varList == null) break;
+            // Adding variable to the local table
+            if (node.getVariable() != null) {
+                Ts tableVariable = new Sa2ts(node.getVariable()).getTableGlobale();
+                for(TsItemVar var : tableVariable.variables.values()) {
+                    tableLocale.addVar(var.identif, var.taille);
                 }
             }
 
