@@ -10,11 +10,14 @@ public class CompilerException extends RuntimeException {
 
     public void printDescription(PrintStream out) {
         switch (type) {
-            case UNDEFINED_VARIABLE:
-                out.println("Trying to call an undefined variable.");
+            case CALL_TO_UNDEFINED_VARIABLE:
+                out.println("[COMPILATION ERROR] Trying to reference an undefined variable.");
+                break;
+            case CALL_TO_UNDEFINED_FUNCTION:
+                out.println("[COMPILATION ERROR] Trying to reference an undefined function.");
                 break;
             default:
-                out.println("Unknown compile exception.");
+                out.println("[COMPILATION ERROR] Unknown compile exception.");
         }
     }
 }

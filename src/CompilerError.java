@@ -1,3 +1,4 @@
 public enum CompilerError {
-    UNDEFINED_VARIABLE,
+    CALL_TO_UNDEFINED_VARIABLE,
+    CALL_TO_UNDEFINED_FUNCTION,
 }
