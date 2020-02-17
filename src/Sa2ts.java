@@ -7,10 +7,27 @@ public class Sa2ts extends SaDepthFirstVisitor <Void> {
 
     public Sa2ts (SaNode saRoot) {
         this.root = saRoot;
+        this.tableGlobale = null;
+    }
+
+    public SaNode getRoot() {
+        return root;
+    }
+
+    public void setRoot(SaNode root) {
+        if (this.root == root) return;
+        this.root = root;
+        this.tableGlobale = null;
     }
 
     public Ts getTableGlobale() {
-        this.tableGlobale = new Ts();
+        // Create the table only if it haven't been created (compute heavy)
+        if (this.tableGlobale == null) {
+            this.tableGlobale = new Ts();
+            // TODO, do the things !
+        }
+
+        return this.tableGlobale;
     }
 
     @Override
