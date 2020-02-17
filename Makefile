@@ -1,11 +1,16 @@
-all: build_grammar
+.PHONY: build_grammar test clean
+all: build_grammar test
 
 build_grammar:
 	java -jar sablecc.jar src/grammaireL.sablecc
 
-clean:
-	rm -f test/input/*.sc
-	rm -f test/input/*.sa
+test:
+	@echo "### Starting Tests..."
+	@cd test; ./evaluate.py
+	@echo "### Finished Tests."
 
-compile:
-	./compile_all.sh
+clean:
+	@echo "### Cleaning build files in test/input/"
+	@rm -f test/input/*.sc
+	@rm -f test/input/*.sa
+	@rm -f test/input/*.ts
