@@ -62,6 +62,8 @@ public class Compiler {
 	    fgSolution.affiche(baseName);*/
 
 
+        } catch (CompilerException e) {
+            e.printDescription(System.out);
         } catch (Exception e) {
             // Un message est pas suffisant bordel
             // 45min perdu à cause d'un NullPointerException et que le seul message c'est "null", ça aide pas putain
@@ -70,12 +72,10 @@ public class Compiler {
         }
     }
 
-
     public static String removeSuffix(final String s, final String suffix) {
         if (s != null && suffix != null && s.endsWith(suffix)) {
             return s.substring(0, s.length() - suffix.length());
         }
         return s;
     }
-
 }
