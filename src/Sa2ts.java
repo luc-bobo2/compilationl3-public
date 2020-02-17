@@ -87,29 +87,18 @@ public class Sa2ts extends SaDepthFirstVisitor <Void> {
     @Override
     public Void visit(SaVarSimple node) {
         defaultIn(node);
-        if (this.tableGlobale.getVar(node.getNom()) == null) {
-            throw new CompilerException(CompilerError.CALL_TO_UNDEFINED_VARIABLE);
-        }
-        defaultOut(node);
         return null;
     }
 
     @Override
     public Void visit(SaVarIndicee node) {
         defaultIn(node);
-        if (this.tableGlobale.getVar(node.getNom()) == null) {
-            throw new CompilerException(CompilerError.CALL_TO_UNDEFINED_VARIABLE);
-        }
-        defaultOut(node);
         return null;
     }
 
     @Override
     public Void visit(SaAppel node) {
         defaultIn(node);
-        if (this.tableGlobale.getFct(node.getNom()) == null) {
-            throw new CompilerException(CompilerError.CALL_TO_UNDEFINED_FUNCTION);
-        }
         defaultOut(node);
         return null;
     }
