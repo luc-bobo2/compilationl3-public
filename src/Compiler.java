@@ -67,7 +67,10 @@ public class Compiler
 
 	}
 	catch(Exception e){
+		// Un message est pas suffisant bordel
+		// 45min perdu à cause d'un NullPointerException et que le seul message c'est "null", ça aide pas putain
 	    System.out.println(e.getMessage());
+	    e.printStackTrace();
 	}
     }
 
