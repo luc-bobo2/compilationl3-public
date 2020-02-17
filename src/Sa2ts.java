@@ -38,28 +38,31 @@ public class Sa2ts extends SaDepthFirstVisitor <Void> {
             System.out.println("hey from visit(SaDecFonc node);");
             defaultIn(node);
 
+            // Declare the local table
             Ts tableLocale = new Ts();
+            // Store the number of parameters, default to 0
+            int nbParams = 0;
 
-            // Adding the function params
-            SaDec param;
-            SaLDec paramsList = node.getParametres();
-            if (paramsList != null && paramsList.length() > 0) {
-                do {
-                    param = paramsList.getTete();
-                    if (param != null) tableLocale.addParam(param.getNom());
-                } while ((paramsList = paramsList.getQueue()) != null);
+            // Adding parameters to the local table
+            if (node.getParametres() != null) {
+                // Update the parameters count
+                nbParams = node.getParametres().length();
+                Ts parametersTable = new Sa2ts(node.getParametres()).tableGlobale;
+                for(TsItemVar var : parametersTable.variables.values()) {
+                    tableLocale.addParam(var.identif);
+                }
             }
 
             // Adding variable to the local table
             if (node.getVariable() != null) {
-                Ts tableVariable = new Sa2ts(node.getVariable()).getTableGlobale();
+                Ts tableVariable = new Sa2ts(node.getVariable()).tableGlobale;
                 for(TsItemVar var : tableVariable.variables.values()) {
                     tableLocale.addVar(var.identif, var.taille);
                 }
             }
 
-            int nbArgs = node.getParametres() == null ? 0 : node.getParametres().length();
-            this.tableGlobale.addFct(node.getNom(), nbArgs, tableLocale, node);
+            // Finally add the function to the table
+            this.tableGlobale.addFct(node.getNom(), nbParams, tableLocale, node);
             defaultOut(node);
         } catch (Exception e) {
             e.printStackTrace();
