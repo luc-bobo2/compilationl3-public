@@ -144,6 +144,8 @@ public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
 
     @Override
     public C3aOperand visit(SaInstRetour node) {
+        C3aOperand c3a = node.getVal().accept(this);
+        return new C3aInstReturn(c3a, null);
         throw new UnsupportedOperationException(); // TODO
     }
 
