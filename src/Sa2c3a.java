@@ -8,14 +8,13 @@ import sa.SaProg;
 import ts.Ts;
 
 public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
-
-    Ts table;
+    private Ts table;
     private C3a c3a;
 
     public Sa2c3a (SaNode saRoot, Ts table) {
-        c3a = new C3a();
-        saRoot.accept(this);
+        this.c3a = new C3a();
         this.table = table;
+        saRoot.accept(this);
     }
 
     public C3a getC3a() {
