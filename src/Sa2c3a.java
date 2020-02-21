@@ -1,13 +1,9 @@
-import c3a.C3a;
-import c3a.C3aInstAdd;
-import c3a.C3aOperand;
-import sa.SaDecVar;
-import sa.SaDepthFirstVisitor;
-import sa.SaNode;
-import sa.SaProg;
+import c3a.*;
+import sa.*;
 import ts.Ts;
 
 public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
+
     private Ts table;
     private C3a c3a;
 
@@ -18,10 +14,22 @@ public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
     }
 
     public C3a getC3a() {
+
         return c3a;
     }
 
     public C3aOperand visit(SaDecVar node) {
-        return node
+        return new C3aVar(node.tsItem,c3a.);
+    }
+
+    public C3aOperand visit(SaDecTab node){
+    }
+
+    public C3aOperand visit(SaDecFonc node) {
+       // node.accept(this);
+        return new C3aFunction(node.tsItem);
+    }
+
+    public C3aOperand visit(SaExpSub node) {
     }
 }
