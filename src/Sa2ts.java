@@ -1,5 +1,6 @@
 import sa.*;
 import ts.Ts;
+import ts.TsItemFct;
 import ts.TsItemVar;
 
 public class Sa2ts extends SaDepthFirstVisitor <Void> {
@@ -30,10 +31,57 @@ public class Sa2ts extends SaDepthFirstVisitor <Void> {
         this.depth -= 1;
     }
 
+    private boolean varExist(String nom) {
+        final TsItemVar local = this.tableLocale.getVar(nom);
+        final TsItemVar global = this.tableGlobale.getVar(nom);
+
+        // Case where we have a local var matching
+        if (local != null) {
+            return local.taille == 1;
+        } else {
+            // Case where we don't have a local var matching but a global one is matching
+            if (global != null) {
+                return global.taille == 1;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean tabExist(String nom) {
+        final TsItemVar local = this.tableLocale.getVar(nom);
+        final TsItemVar global = this.tableGlobale.getVar(nom);
+
+        // Case where we have a local var matching
+        if (local != null) {
+            return local.taille > 1;
+        } else {
+            // Case where we don't have a local var matching but a global one is matching
+            if (global != null) {
+                return global.taille > 1;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean funcExist(String nom) {
+        return this.tableGlobale.getFct(nom) != null;
+    }
+
+    private void _assert(boolean value, CompilerError errorToThrow) {
+        if (!value) throw new CompilerException(errorToThrow);
+    }
+
     @Override
     public Void visit(SaDecVar node) {
         defaultIn(node);
-        this.tableGlobale.addVar(node.getNom(), 1);
+
+        // Assert var don't exist then add it to the table
+        final String nom = node.getNom();
+        _assert(!varExist(nom), CompilerError.VAR_ALREADY_DECLARED);
+        this.tableGlobale.addVar(nom, 1);
+
         defaultOut(node);
         return null;
     }
@@ -41,7 +89,11 @@ public class Sa2ts extends SaDepthFirstVisitor <Void> {
     @Override
     public Void visit(SaDecTab node) {
         defaultIn(node);
-        this.tableGlobale.addVar(node.getNom(), node.getTaille());
+
+        final String nom = node.getNom();
+        _assert(!tabExist(nom), CompilerError.TAB_ALREADY_DECLARED);
+        this.tableGlobale.addVar(nom, node.getTaille());
+
         defaultOut(node);
         return null;
     }
@@ -50,7 +102,10 @@ public class Sa2ts extends SaDepthFirstVisitor <Void> {
     public Void visit(SaDecFonc node) {
         defaultIn(node);
 
-        // Init la table locale
+        // assert func don't exist
+        _assert(!funcExist(node.getNom()), CompilerError.FUNCTION_ALREADY_DECLARED);
+
+        // Init local table
         this.tableLocale = new Ts();
         // Store the number of parameters, default to 0
         int nbParams = 0;
@@ -87,10 +142,7 @@ public class Sa2ts extends SaDepthFirstVisitor <Void> {
     public Void visit(SaVarSimple node) {
         defaultIn(node);
 
-        String nom = node.getNom();
-        if (this.tableLocale.getVar(nom) == null && this.tableGlobale.getVar(nom) == null) {
-            throw new CompilerException(CompilerError.CALL_TO_UNDEFINED_VAR);
-        }
+        _assert(varExist(node.getNom()), CompilerError.CALL_TO_UNDEFINED_VAR);
 
         defaultOut(node);
         return null;
@@ -100,10 +152,7 @@ public class Sa2ts extends SaDepthFirstVisitor <Void> {
     public Void visit(SaVarIndicee node) {
         defaultIn(node);
 
-        String nom = node.getNom();
-        if (this.tableLocale.getVar(nom) == null && this.tableGlobale.getVar(nom) == null) {
-            throw new CompilerException(CompilerError.CALL_TO_UNDEFINED_VAR_INDICEE);
-        }
+        _assert(tabExist(node.getNom()), CompilerError.CALL_TO_UNDEFINED_TAB);
 
         defaultOut(node);
         return null;
@@ -113,10 +162,7 @@ public class Sa2ts extends SaDepthFirstVisitor <Void> {
     public Void visit(SaAppel node) {
         defaultIn(node);
 
-        String nom = node.getNom();
-        if (this.tableGlobale.getFct(nom) == null) {
-            throw new CompilerException(CompilerError.CALL_TO_UNDEFINED_FUNCTION);
-        }
+        _assert(funcExist(node.getNom()), CompilerError.CALL_TO_UNDEFINED_FUNCTION);
 
         defaultOut(node);
         return null;
