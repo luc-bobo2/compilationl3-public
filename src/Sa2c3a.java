@@ -64,7 +64,11 @@ public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
 
     @Override
     public C3aOperand visit(SaInstAffect node) {
-        throw new UnsupportedOperationException(); // TODO
+        C3aOperand op1 = node.getLhs().accept(this);
+        C3aOperand result = node.getRhs().accept(this);
+        C3aInstAffect affect = new C3aInstAffect(op1, result, "");
+        c3a.ajouteInst(affect);
+        return null; // TODO
     }
 
     @Override
@@ -84,22 +88,38 @@ public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
 
     @Override
     public C3aOperand visit(SaExpAdd node) {
-        throw new UnsupportedOperationException(); // TODO
+        C3aOperand op1 = node.getOp1().accept(this);
+        C3aOperand op2 = node.getOp2().accept(this);
+        C3aInstAdd add = new C3aInstAdd(op1, op2, c3a.newAutoLabel(), "");
+        c3a.ajouteInst(add);
+        return null;
     }
 
     @Override
     public C3aOperand visit(SaExpSub node) {
-        throw new UnsupportedOperationException(); // TODO
+        C3aOperand op1 = node.getOp1().accept(this);
+        C3aOperand op2 = node.getOp2().accept(this);
+        C3aInstSub sub = new C3aInstSub(op1, op2, c3a.newAutoLabel(), "");
+        c3a.ajouteInst(sub);
+        return null;
     }
 
     @Override
     public C3aOperand visit(SaExpMult node) {
-        throw new UnsupportedOperationException(); // TODO
+        C3aOperand op1 = node.getOp1().accept(this);
+        C3aOperand op2 = node.getOp2().accept(this);
+        C3aInstMult mult = new C3aInstMult(op1, op2, c3a.newAutoLabel(), "");
+        c3a.ajouteInst(mult);
+        return null;
     }
 
     @Override
     public C3aOperand visit(SaExpDiv node) {
-        throw new UnsupportedOperationException(); // TODO
+        C3aOperand op1 = node.getOp1().accept(this);
+        C3aOperand op2 = node.getOp2().accept(this);
+        C3aInstDiv div = new C3aInstDiv(op1, op2, c3a.newAutoLabel(), "");
+        c3a.ajouteInst(div);
+        return null;
     }
 
     @Override
@@ -144,8 +164,6 @@ public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
 
     @Override
     public C3aOperand visit(SaInstRetour node) {
-        C3aOperand c3a = node.getVal().accept(this);
-        return new C3aInstReturn(c3a, null);
         throw new UnsupportedOperationException(); // TODO
     }
 
