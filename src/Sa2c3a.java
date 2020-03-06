@@ -19,7 +19,9 @@ public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
 
     @Override
     public C3aOperand visit(SaProg node) {
-        throw new UnsupportedOperationException(); // TODO
+        node.getVariables().accept(this);
+        node.getFonctions().accept(this);
+        return null;
     }
 
     @Override
@@ -44,17 +46,38 @@ public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
 
     @Override
     public C3aOperand visit(SaInstEcriture node) {
-        throw new UnsupportedOperationException(); // TODO
+        C3aOperand arg = node.getArg().accept(this);
+        c3a.ajouteInst(new C3aInstWrite(arg, ""));
+        return null;
     }
 
     @Override
     public C3aOperand visit(SaInstTantQue node) {
-        throw new UnsupportedOperationException(); // TODO
+        /*
+            $labelTest: do test
+            if $test = 0 goto $labelEnd
+            do code
+            goto $labelTest
+            $labelEnd: next
+         */
+        C3aLabel labelTest = c3a.newAutoLabel();
+        C3aLabel labelEnd = c3a.newAutoLabel();
+        c3a.addLabelToNextInst(labelTest);
+        C3aOperand testResult = node.getTest().accept(this);
+        c3a.ajouteInst(new C3aInstJumpIfEqual(testResult, new C3aConstant(0), labelEnd, ""));
+        node.getFaire().accept(this);
+        c3a.ajouteInst(new C3aInstJump(labelTest, ""));
+        c3a.addLabelToNextInst(labelEnd);
+        return null;
     }
 
     @Override
     public C3aOperand visit(SaLInst node) {
-        throw new UnsupportedOperationException(); // TODO
+        if(node.getTete() != null) {
+            node.getTete().accept(this);
+            node.getQueue().accept(this);
+        }
+        return null;
     }
 
     @Override
@@ -64,8 +87,8 @@ public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
 
     @Override
     public C3aOperand visit(SaInstAffect node) {
-        C3aOperand op1 = node.getLhs().accept(this);
-        C3aOperand result = node.getRhs().accept(this);
+        C3aOperand result = node.getLhs().accept(this);
+        C3aOperand op1 = node.getRhs().accept(this);
         C3aInstAffect affect = new C3aInstAffect(op1, result, "");
         c3a.ajouteInst(affect);
         return null; // TODO
@@ -159,12 +182,30 @@ public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
 
     @Override
     public C3aOperand visit(SaInstSi node) {
-        throw new UnsupportedOperationException(); // TODO
+        C3aLabel l0 = c3a.newAutoLabel();
+        C3aLabel l1 = c3a.newAutoLabel();
+
+        // if exp = 0 goto l0
+        C3aOperand op1 = node.getTest().accept(this);
+        c3a.ajouteInst(new C3aInstJumpIfEqual(op1, new C3aConstant(0), l0, ""));
+        // CODE ALORS
+        node.getAlors().accept(this);
+        // goto l1
+        c3a.ajouteInst(new C3aInstJump(l1, ""));
+
+        // l0:  CODE SINON
+        c3a.addLabelToNextInst(l0);
+        node.getSinon().accept(this);
+
+        // Add label for next operation
+        c3a.addLabelToNextInst(l1);
+        return null;
     }
 
     @Override
     public C3aOperand visit(SaInstRetour node) {
-        throw new UnsupportedOperationException(); // TODO
+        c3a.ajouteInst(new C3aInstReturn(node.getVal().accept(this), ""));
+        return null;
     }
 
     @Override
