@@ -26,8 +26,9 @@ public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
 
     @Override
     public C3aOperand visit(SaDecTab node) {
-        C3aOperand arg = node.accept(this);
-        return new C3aVar(node.tsItem,arg);
+        /*C3aOperand arg = node.accept(this);
+        return new C3aVar(node.tsItem,arg);*/
+        return null;
     }
 
     @Override
@@ -83,7 +84,7 @@ public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
 
     @Override
     public C3aOperand visit(SaDecVar node) {
-        throw new UnsupportedOperationException(); // TODO
+        return null;
     }
 
     @Override
