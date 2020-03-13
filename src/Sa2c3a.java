@@ -163,7 +163,11 @@ public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
 
     @Override
     public C3aOperand visit(SaLDec node) {
-        throw new UnsupportedOperationException(); // TODO
+        if(node.getTete() != null) {
+            node.getTete().accept(this);
+            node.getQueue().accept(this);
+        }
+        return null;
     }
 
     @Override
@@ -178,52 +182,89 @@ public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
 
     @Override
     public C3aOperand visit(SaExp node) {
-        throw new UnsupportedOperationException(); // TODO
+        return null;
     }
 
     @Override
-    public C3aOperand visit(SaExpInt node) {
-        throw new UnsupportedOperationException(); // TODO
+    public C3aOperand visit(SaExpInt node){
+        return null;
     }
 
     @Override
     public C3aOperand visit(SaExpVar node) {
-        throw new UnsupportedOperationException(); // TODO
+        C3aOperand c3a = node.accept(this);
+        return new C3aVar(null,c3a);
     }
 
     @Override
     public C3aOperand visit(SaExpInf node) {
-        throw new UnsupportedOperationException(); // TODO
+        // if op1 < op2 goto l0
+        C3aLabel label1 = c3a.newAutoLabel();
+        C3aTemp temp = c3a.newTemp();
+        C3aOperand op1 = node.getOp1().accept(this);
+        C3aOperand op2 = node.getOp2().accept(this);
+        c3a.ajouteInst(new C3aInstAffect(new C3aConstant(1), temp, ""));
+        c3a.ajouteInst(new C3aInstJumpIfLess(op1, op2, label1, ""));
+        c3a.ajouteInst(new C3aInstAffect(new C3aConstant(0), temp, ""));
+        c3a.addLabelToNextInst(label1);
+        return null;
     }
 
     @Override
     public C3aOperand visit(SaExpEqual node) {
-        throw new UnsupportedOperationException(); // TODO
+        return null;
     }
 
     @Override
     public C3aOperand visit(SaExpAnd node) {
-        throw new UnsupportedOperationException(); // TODO
+        C3aLabel label1 = c3a.newAutoLabel();
+        C3aLabel label2 = c3a.newAutoLabel();
+        C3aTemp temp = c3a.newTemp();
+        C3aOperand op1 = node.getOp1().accept(this);
+        C3aOperand op2 = node.getOp2().accept(this);
+        c3a.ajouteInst(new C3aInstJumpIfEqual(op1, new C3aConstant(0), label1, ""));
+        c3a.ajouteInst(new C3aInstJumpIfEqual(op2, new C3aConstant(0), label1, ""));
+        c3a.ajouteInst(new C3aInstAffect(new C3aConstant(1), temp, ""));
+        c3a.ajouteInst(new C3aInstJump(label2, ""));
+        C3aInstAffect c3aInstAffect2 = new C3aInstAffect(new C3aConstant(0), temp, "");
+        c3aInstAffect2.setLabel(label1);
+        c3a.addLabelToNextInst(label1);
+        return null;
     }
 
     @Override
     public C3aOperand visit(SaExpOr node) {
-        throw new UnsupportedOperationException(); // TODO
+
+        C3aLabel label1 = c3a.newAutoLabel();
+        C3aLabel label2 = c3a.newAutoLabel();
+        C3aTemp temp = c3a.newTemp();
+        C3aOperand op1 = node.getOp1().accept(this);
+        C3aOperand op2 = node.getOp2().accept(this);
+        c3a.ajouteInst(new C3aInstJumpIfNotEqual(op1, new C3aConstant(0), label1, ""));
+        c3a.ajouteInst(new C3aInstJumpIfNotEqual(op2, new C3aConstant(0), label1, ""));
+        c3a.ajouteInst(new C3aInstAffect(new C3aConstant(0), temp, ""));
+        c3a.ajouteInst(new C3aInstJump(label2, ""));
+        C3aInstAffect c3aInstAffect2 = new C3aInstAffect(new C3aConstant(1), temp, "");
+        c3aInstAffect2.setLabel(label1);
+        c3a.addLabelToNextInst(label1);
+        return null;
     }
 
     @Override
     public C3aOperand visit(SaExpNot node) {
-        throw new UnsupportedOperationException(); // TODO
+        return null;
     }
 
     @Override
     public C3aOperand visit(SaExpLire node) {
-        throw new UnsupportedOperationException(); // TODO
+        return null;
     }
 
     @Override
-    public C3aOperand visit(SaInstBloc node) {
-        throw new UnsupportedOperationException(); // TODO
+    public C3aOperand visit(SaInstBloc node){
+
+        //c3a.ajouteInst(new C3aInst(node.getVal().getQueue()));
+        return null;
     }
 
     @Override
