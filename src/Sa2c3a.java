@@ -171,32 +171,6 @@ public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
     }
 
     @Override
-    public C3aOperand visit(SaAppel node) {
-        throw new UnsupportedOperationException(); // TODO
-    }
-
-    @Override
-    public C3aOperand visit(SaExpAppel node) {
-        throw new UnsupportedOperationException(); // TODO
-    }
-
-    @Override
-    public C3aOperand visit(SaExp node) {
-        return null;
-    }
-
-    @Override
-    public C3aOperand visit(SaExpInt node){
-        return null;
-    }
-
-    @Override
-    public C3aOperand visit(SaExpVar node) {
-        C3aOperand c3a = node.accept(this);
-        return new C3aVar(null,c3a);
-    }
-
-    @Override
     public C3aOperand visit(SaExpInf node) {
         // if op1 < op2 goto l0
         C3aLabel label1 = c3a.newAutoLabel();
@@ -251,24 +225,57 @@ public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
     }
 
     @Override
+    public C3aOperand visit(SaAppel node) {
+        return new C3aFunction(table.getFct(node.getNom()));
+    }
+
+    @Override
+    public C3aOperand visit(SaInstBloc node){
+        node.getVal().accept(this);
+        return null;
+    }
+
+    @Override
+    public C3aOperand visit(SaLExp node) {
+        if(node.getTete() != null) {
+            node.getTete().accept(this);
+            node.getQueue().accept(this);
+        }
+        return null;
+    }
+
+    @Override
+    public C3aOperand visit(SaExpAppel node) {
+        return null;
+    }
+
+    @Override
+    public C3aOperand visit(SaExp node) {
+        return null;
+    }
+
+    @Override
+    public C3aOperand visit(SaExpInt node){
+        return null;
+    }
+
+    @Override
+    public C3aOperand visit(SaExpVar node) {
+        C3aOperand c3a = node.accept(this);
+        return new C3aVar(null,c3a);
+    }
+
+
+    @Override
     public C3aOperand visit(SaExpNot node) {
         return null;
     }
 
     @Override
     public C3aOperand visit(SaExpLire node) {
+        node.accept(this);
         return null;
     }
 
-    @Override
-    public C3aOperand visit(SaInstBloc node){
 
-        //c3a.ajouteInst(new C3aInst(node.getVal().getQueue()));
-        return null;
-    }
-
-    @Override
-    public C3aOperand visit(SaLExp node) {
-        throw new UnsupportedOperationException(); // TODO
-    }
 }
