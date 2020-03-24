@@ -7,6 +7,7 @@ public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
     private Ts table;
     private C3a c3a;
 
+
     public Sa2c3a (SaNode saRoot, Ts table) {
         this.c3a = new C3a();
         this.table = table;
@@ -18,16 +19,35 @@ public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
     }
 
     @Override
-    public C3aOperand visit(SaProg node) {
-        node.getVariables().accept(this);
-        node.getFonctions().accept(this);
+    public C3aOperand visit(SaDecTab node) {
         return null;
     }
 
     @Override
-    public C3aOperand visit(SaDecTab node) {
-        /*C3aOperand arg = node.accept(this);
-        return new C3aVar(node.tsItem,arg);*/
+    public C3aOperand visit(SaDecVar node) {
+        return null;
+    }
+
+    @Override
+    public C3aOperand visit(SaExpNot node) {
+        return null;
+    }
+
+
+    @Override
+    public C3aOperand visit(SaExpEqual node) {
+        return null;
+    }
+
+    @Override
+    public C3aOperand visit(SaExp node) {
+        return null;
+    }
+
+    @Override
+    public C3aOperand visit(SaProg node) {
+        node.getVariables().accept(this);
+        node.getFonctions().accept(this);
         return null;
     }
 
@@ -64,11 +84,6 @@ public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
             node.getTete().accept(this);
             node.getQueue().accept(this);
         }
-        return null;
-    }
-
-    @Override
-    public C3aOperand visit(SaDecVar node) {
         return null;
     }
 
@@ -185,11 +200,6 @@ public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
     }
 
     @Override
-    public C3aOperand visit(SaExpEqual node) {
-        return null;
-    }
-
-    @Override
     public C3aOperand visit(SaExpAnd node) {
         C3aLabel label1 = c3a.newAutoLabel();
         C3aLabel label2 = c3a.newAutoLabel();
@@ -255,11 +265,6 @@ public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
     }
 
     @Override
-    public C3aOperand visit(SaExp node) {
-        return null;
-    }
-
-    @Override
     public C3aOperand visit(SaExpInt node){
         return new C3aConstant(node.getVal());
     }
@@ -270,18 +275,10 @@ public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
         return new C3aVar(null,c3a);
     }
 
-
-    @Override
-    public C3aOperand visit(SaExpNot node) {
-        return null;
-    }
-
     @Override
     public C3aOperand visit(SaExpLire node) {
         C3aInstRead c3aInstRead = new C3aInstRead( node.accept(this), "");
         c3a.ajouteInst(c3aInstRead);
         return null;
     }
-
-
 }
