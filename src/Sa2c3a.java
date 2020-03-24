@@ -226,6 +226,7 @@ public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
 
     @Override
     public C3aOperand visit(SaAppel node) {
+        if (node.getArguments() != null) node.getArguments().accept(this);
         return new C3aFunction(table.getFct(node.getNom()));
     }
 
@@ -246,7 +247,11 @@ public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
 
     @Override
     public C3aOperand visit(SaExpAppel node) {
-        return null;
+        C3aFunction c3aFunction = (C3aFunction) node.getVal().accept(this);
+        C3aTemp temp = c3a.newTemp();
+        C3aInstCall c3aInstCall = new C3aInstCall(c3aFunction, temp,"");
+        c3a.ajouteInst(c3aInstCall);
+        return temp;
     }
 
     @Override
@@ -256,7 +261,7 @@ public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
 
     @Override
     public C3aOperand visit(SaExpInt node){
-        return null;
+        return new C3aConstant(node.getVal());
     }
 
     @Override
@@ -273,7 +278,8 @@ public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
 
     @Override
     public C3aOperand visit(SaExpLire node) {
-        node.accept(this);
+        C3aInstRead c3aInstRead = new C3aInstRead( node.accept(this), "");
+        c3a.ajouteInst(c3aInstRead);
         return null;
     }
 
