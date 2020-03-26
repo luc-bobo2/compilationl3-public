@@ -80,27 +80,30 @@ public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
     public C3aOperand visit(SaExpAdd node) {
         C3aOperand op1 = node.getOp1().accept(this);
         C3aOperand op2 = node.getOp2().accept(this);
-        C3aInstAdd add = new C3aInstAdd(op1, op2, c3a.newAutoLabel(), "");
+        C3aTemp resultat = c3a.newTemp();
+        C3aInstAdd add = new C3aInstAdd(op1, op2, resultat, "");
         c3a.ajouteInst(add);
-        return null;
+        return resultat;
     }
 
     @Override
     public C3aOperand visit(SaExpSub node) {
         C3aOperand op1 = node.getOp1().accept(this);
         C3aOperand op2 = node.getOp2().accept(this);
-        C3aInstSub sub = new C3aInstSub(op1, op2, c3a.newAutoLabel(), "");
+        C3aTemp resultat = c3a.newTemp();
+        C3aInstSub sub = new C3aInstSub(op1, op2, resultat, "");
         c3a.ajouteInst(sub);
-        return null;
+        return resultat;
     }
 
     @Override
     public C3aOperand visit(SaExpMult node) {
         C3aOperand op1 = node.getOp1().accept(this);
         C3aOperand op2 = node.getOp2().accept(this);
-        C3aInstMult mult = new C3aInstMult(op1, op2, c3a.newAutoLabel(), "");
+        C3aTemp c3aTemp = c3a.newTemp();
+        C3aInstMult mult = new C3aInstMult(op1, op2, c3aTemp, "");
         c3a.ajouteInst(mult);
-        return null;
+        return c3aTemp;
     }
 
     @Override
