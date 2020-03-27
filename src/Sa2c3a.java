@@ -265,7 +265,7 @@ public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
         tableLocale = table.getTableLocale(node.getNom());
         super.visit(node);
         tableLocale = null;
-        c3a.ajouteInst(new C3aInstFEnd(""));
+        c3a.ajouteInst(new C3aInstFEnd("Fin de la fonction"));
         return null;
     }
 
