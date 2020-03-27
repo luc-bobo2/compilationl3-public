@@ -1,11 +1,14 @@
 import c3a.*;
 import sa.*;
 import ts.Ts;
+import ts.TsItemFct;
 
 public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
 
     private Ts table;
     private C3a c3a;
+    private Ts tableLocaleCourante = null;
+
 
     public Sa2c3a (SaNode saRoot, Ts table) {
         this.c3a = new C3a();
@@ -46,7 +49,6 @@ public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
     public C3aOperand visit(SaProg node) {
         node.getFonctions().accept(this);
         return null;
-        // return super.visit(node);
     }
 
     @Override
@@ -227,7 +229,13 @@ public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
 
     @Override
     public C3aOperand visit(SaDecFonc node) {
-        return new C3aFunction(table.getFct(node.getNom()));
+        TsItemFct tsItemFct = table.getFct(node.getNom());
+        c3a.ajouteInst(new C3aInstFBegin(tsItemFct, "Entree de la fonction"));
+        tableLocaleCourante = table.getTableLocale(node.getNom());
+        super.visit(node);
+        tableLocaleCourante = null;
+        c3a.ajouteInst(new C3aInstFEnd(""));
+        return null;
     }
 
     @Override
