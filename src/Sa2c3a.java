@@ -80,7 +80,7 @@ public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
         C3aOperand op1 = node.getOp1().accept(this);
         C3aOperand op2 = node.getOp2().accept(this);
         C3aTemp c3aTemp = c3a.newTemp();
-        C3aInstAdd add = new C3aInstAdd(op1, op2, c3aTemp, "add");
+        C3aInstAdd add = new C3aInstAdd(op1, op2, c3aTemp, "");
         c3a.ajouteInst(add);
         return c3aTemp;
     }
@@ -90,7 +90,7 @@ public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
         C3aOperand op1 = node.getOp1().accept(this);
         C3aOperand op2 = node.getOp2().accept(this);
         C3aTemp c3aTemp = c3a.newTemp();
-        C3aInstSub sub = new C3aInstSub(op1, op2, c3aTemp, "sub");
+        C3aInstSub sub = new C3aInstSub(op1, op2, c3aTemp, "");
         c3a.ajouteInst(sub);
         return c3aTemp;
     }
@@ -100,7 +100,7 @@ public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
         C3aOperand op1 = node.getOp1().accept(this);
         C3aOperand op2 = node.getOp2().accept(this);
         C3aTemp c3aTemp = c3a.newTemp();
-        C3aInstMult mult = new C3aInstMult(op1, op2, c3aTemp, "mult");
+        C3aInstMult mult = new C3aInstMult(op1, op2, c3aTemp, "");
         c3a.ajouteInst(mult);
         return c3aTemp;
     }
@@ -110,7 +110,7 @@ public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
         C3aOperand c3aOperand = node.getOp1().accept(this);
         C3aOperand c3aOperand1 = node.getOp2().accept(this);
         C3aTemp c3aTemp = c3a.newTemp();
-        C3aInstDiv c3aInstDiv = new C3aInstDiv(c3aOperand ,c3aOperand1, c3aTemp, "div");
+        C3aInstDiv c3aInstDiv = new C3aInstDiv(c3aOperand ,c3aOperand1, c3aTemp, "");
         c3a.ajouteInst(c3aInstDiv);
         return c3aTemp;
     }
@@ -284,7 +284,13 @@ public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
 
     @Override
     public C3aOperand visit(SaVarSimple node) {
-        return new C3aVar(table.getVar(node.getNom()), null);
+        C3aVar var;
+        if (table.getVar(node.getNom()) == null) {
+            var = new C3aVar(tableLocale.getVar(node.getNom()), null);
+        } else {
+            var = new C3aVar(table.getVar(node.getNom()), null);
+        }
+        return var;
     }
 
     @Override
