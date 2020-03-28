@@ -14,3 +14,6 @@ clean:
 	@rm -f test/input/*.sc
 	@rm -f test/input/*.sa
 	@rm -f test/input/*.ts
+	@rm -f test/input/*.c3a
+	@rm -f test/input/*.c3aout
+	@rm -f test/input/*.pre-nasm
