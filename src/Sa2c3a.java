@@ -58,7 +58,7 @@ public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
     @Override
     public C3aOperand visit(SaInstEcriture node) {
         C3aOperand arg = node.getArg().accept(this);
-        c3a.ajouteInst(new C3aInstWrite(arg, "Ecriture"));
+        c3a.ajouteInst(new C3aInstWrite(arg, ""));
         return null;
     }
 
