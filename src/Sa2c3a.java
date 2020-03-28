@@ -148,7 +148,7 @@ public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
         c3a.ajouteInst(new C3aInstJumpIfLess(op1, op2, label1, ""));
         c3a.ajouteInst(new C3aInstAffect(new C3aConstant(0), temp, ""));
         c3a.addLabelToNextInst(label1);
-        return null;
+        return temp;
     }
 
     @Override
