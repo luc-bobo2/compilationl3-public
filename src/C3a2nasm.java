@@ -295,11 +295,31 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
 
     @Override
     public NasmOperand visit(C3aVar oper) {
-        return null;
+        // Param ?
+        final boolean isGlobal = this.tableGlobale.variables.containsKey(oper.item.identif);
+
+        if (oper.item.isParam) {
+            NasmRegister ebp = nasm.newRegister();
+            ebp.colorRegister(Nasm.REG_EBP);
+
+            return new NasmAddress(ebp, '+', new NasmConstant(2+(this.currentFct.nbArgs - oper.item.adresse)));
+        } else if (!isGlobal) {
+            NasmRegister ebp = nasm.newRegister();
+            ebp.colorRegister(Nasm.REG_EBP);
+
+            return new NasmAddress(ebp, '-', new NasmConstant(1+oper.item.adresse));
+        } else {
+            // Tab ?
+            if (oper.item.taille > 1) {
+                return new NasmAddress(new NasmLabel(oper.item.identif), '+', oper.index.accept(this));
+            } else {
+                return new NasmAddress(new NasmLabel(oper.item.identif));
+            }
+        }
     }
 
     @Override
     public NasmOperand visit(C3aFunction oper) {
-        return null;
+        return new NasmLabel(oper.val.identif);
     }
 }
