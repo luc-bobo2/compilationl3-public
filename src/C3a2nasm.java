@@ -65,13 +65,14 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
         nasm.ajouteInst(new NasmSub(label, esp, new NasmConstant(4), "allocation mémoire pour la valeur de retour"));
         nasm.ajouteInst(new NasmCall(label, address, ""));
 
-        NasmRegister eax = nasm.newRegister();
-        eax.colorRegister(Nasm.REG_EAX);
-        nasm.ajouteInst(new NasmPop(null, eax, "récupération de la valeur de retour"));
-
         if (inst.result != null) {
             NasmOperand dest = inst.result.accept(this);
-            nasm.ajouteInst(new NasmMov(null, dest, eax, ""));
+            nasm.ajouteInst(new NasmPop(null, dest, "récupération de la valeur de retour"));
+        }
+
+        final int nbArgs = tableGlobale.getFct(inst.op1.val.identif).nbArgs;
+        if (nbArgs > 0) {
+            nasm.ajouteInst(new NasmAdd(null, esp, new NasmConstant(4*nbArgs), "désallocation des arguments"));
         }
         return null;
     }
@@ -88,7 +89,7 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
         // Set the current function
         this.currentFct = inst.val;
 
-        NasmConstant localVarSize = new NasmConstant(4 * inst.val.nbArgs);
+        NasmConstant localVarSize = new NasmConstant(4 * this.currentFct.getTable().nbVar());
         nasm.ajouteInst(new NasmPush(label, ebp,"sauvegarde la valeur de ebp"));
         nasm.ajouteInst(new NasmMov(null, ebp, esp, "nouvelle valeur de ebp"));
         nasm.ajouteInst(new NasmSub(null, esp, localVarSize, "allocation des variables locales"));
@@ -162,7 +163,7 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
         NasmRegister ebp = nasm.newRegister();
         ebp.colorRegister(Nasm.REG_EBP);
 
-        NasmConstant localVarSize = new NasmConstant(4*this.currentFct.nbArgs);
+        NasmConstant localVarSize = new NasmConstant(4*this.currentFct.getTable().nbVar());
         nasm.ajouteInst(new NasmAdd(label, esp, localVarSize, "désallocation des variables locales"));
         nasm.ajouteInst(new NasmPop(null, ebp, "restaure la valeur de ebp"));
         nasm.ajouteInst(new NasmRet(null, ""));
@@ -246,8 +247,13 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
     @Override
     public NasmOperand visit(C3aInstReturn inst) {
         NasmLabel label = getLabel(inst);
+        NasmOperand val = inst.op1.accept(this);
 
-        //TODO
+        NasmRegister ebp = nasm.newRegister();
+        ebp.colorRegister(Nasm.REG_EBP);
+        NasmAddress retour = new NasmAddress(ebp, '+', new NasmConstant(2));
+
+        nasm.ajouteInst(new NasmMov(label, retour, val, "ecriture de la valeur de retour"));
         return null;
     }
 
