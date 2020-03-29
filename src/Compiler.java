@@ -63,7 +63,7 @@ public class Compiler
             System.out.print("[BUILD PRE NASM] ");
             Nasm nasm = new C3a2nasm(c3a, table).getNasm();
             System.out.println("[PRINT PRE NASM] ");
-            nasm.affiche(baseName);
+            nasm.affichePre(baseName);
 
       /*
 	    System.out.print("[BUILD FG] ");

@@ -183,32 +183,61 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
     public NasmOperand visit(C3aInstJump inst) {
         NasmOperand label = getLabel(inst);
         NasmOperand address = inst.result.accept(this);
-        nasm.ajouteInst(new NasmJmp(label, address, ""));
+        nasm.ajouteInst(new NasmJmp(label, address, "Jump"));
         return null;
     }
 
     @Override
     public NasmOperand visit(C3aInstJumpIfEqual inst) {
         NasmOperand label = getLabel(inst);
-        NasmOperand address = inst.result.accept(this);
-        nasm.ajouteInst(new NasmJe(label, address, ""));
+        NasmOperand op1 = inst.op1.accept(this);
+        NasmOperand op2 = inst.op2.accept(this);
+        NasmOperand dest = inst.result.accept(this);
+
+        if (op1 instanceof NasmRegister) {
+            nasm.ajouteInst(new NasmCmp(label, op1, op2, "JumpIfEqual 1"));
+        } else {
+            NasmRegister tmp = nasm.newRegister();
+            nasm.ajouteInst(new NasmMov(label, tmp, op1, "JumpIfEqual 1"));
+            nasm.ajouteInst(new NasmCmp(null, tmp, op2, "on passe par un registre temporaire"));
+        }
+        nasm.ajouteInst(new NasmJe(null, dest, "JumpIfEqual 2"));
         return null;
     }
 
     @Override
     public NasmOperand visit(C3aInstJumpIfNotEqual inst) {
         NasmOperand label = getLabel(inst);
-        NasmOperand address = inst.result.accept(this);
-        nasm.ajouteInst(new NasmJne(label, address, ""));
+        NasmOperand op1 = inst.op1.accept(this);
+        NasmOperand op2 = inst.op2.accept(this);
+        NasmOperand dest = inst.result.accept(this);
+
+        if (op1 instanceof NasmRegister) {
+            nasm.ajouteInst(new NasmCmp(label, op1, op2, "jumpIfNotEqual 1"));
+        } else {
+            NasmRegister tmp = nasm.newRegister();
+            nasm.ajouteInst(new NasmMov(label, tmp, op1, "jumpIfNotEqual 1"));
+            nasm.ajouteInst(new NasmCmp(null, tmp, op2, "on passe par un registre temporaire"));
+        }
+        nasm.ajouteInst(new NasmJne(null, dest, "jumpIfNotEqual 2"));
         return null;
     }
 
     @Override
     public NasmOperand visit(C3aInstJumpIfLess inst) {
         NasmOperand label = getLabel(inst);
-        NasmOperand address = inst.result.accept(this);
+        NasmOperand op1 = inst.op1.accept(this);
+        NasmOperand op2 = inst.op2.accept(this);
+        NasmOperand dest = inst.result.accept(this);
 
-        nasm.ajouteInst(new NasmJl(label, address, ""));
+        if (op1 instanceof NasmRegister) {
+            nasm.ajouteInst(new NasmCmp(label, op1, op2, "JumpIfLess 1"));
+        } else {
+            NasmRegister tmp = nasm.newRegister();
+            nasm.ajouteInst(new NasmMov(label, tmp, op1, "JumpIfLess 1"));
+            nasm.ajouteInst(new NasmCmp(null, tmp, op2, "on passe par un registre temporaire"));
+        }
+        nasm.ajouteInst(new NasmJl(null, dest, "JumpIfLess 2"));
         return null;
     }
 
