@@ -105,13 +105,10 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
         NasmLabel label = getLabel(inst);
         NasmOperand op1 = inst.op1.accept(this);
         NasmOperand op2 = inst.op2.accept(this);
+        NasmOperand dest = inst.result.accept(this);
 
-        NasmRegister eax = nasm.newRegister();
-        eax.colorRegister(Nasm.REG_EAX);
-
-        nasm.ajouteInst(new NasmMov(label ,eax, op1, ""));
-        nasm.ajouteInst(new NasmMul(null, eax, op2 ,""));
-        nasm.ajouteInst(new NasmMov(null, eax, eax ,""));
+        nasm.ajouteInst(new NasmMov(label , dest, op1, ""));
+        nasm.ajouteInst(new NasmMul(null, dest, op2 ,""));
         return null;
     }
 
@@ -119,15 +116,11 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
     public NasmOperand visit(C3aInstSub inst) {
         NasmLabel label = getLabel(inst);
         NasmOperand op1 = inst.op1.accept(this);
-        NasmOperand op2 = inst.op1.accept(this);
+        NasmOperand op2 = inst.op2.accept(this);
         NasmOperand dest = inst.result.accept(this);
 
-        NasmRegister eax = nasm.newRegister();
-        eax.colorRegister(Nasm.REG_EAX);
-
-        nasm.ajouteInst(new NasmMov(label ,eax, op1, ""));
-        nasm.ajouteInst(new NasmSub(null, eax, op2 ,""));
-        nasm.ajouteInst(new NasmMov(null, dest, eax ,""));
+        nasm.ajouteInst(new NasmMov(label ,dest, op1, ""));
+        nasm.ajouteInst(new NasmSub(null, dest, op2 ,""));
         return null;
     }
 
@@ -136,17 +129,17 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
         NasmLabel label = getLabel(inst);
         NasmOperand op1 = inst.op1.accept(this);
         NasmOperand op2 = inst.op2.accept(this);
+        NasmOperand dest = inst.result.accept(this);
 
         NasmRegister eax = nasm.newRegister();
         eax.colorRegister(Nasm.REG_EAX);
-        NasmRegister ebx = nasm.newRegister();
-        ebx.colorRegister(Nasm.REG_EBX);
 
+        NasmRegister tmp = nasm.newRegister();
 
         nasm.ajouteInst(new NasmMov(label, eax, op1, ""));
-        nasm.ajouteInst(new NasmMov(null, ebx, op2, ""));
-        nasm.ajouteInst(new NasmDiv(null, ebx, ""));
-        //TODO result
+        nasm.ajouteInst(new NasmMov(null, tmp, op2, ""));
+        nasm.ajouteInst(new NasmDiv(null, tmp, ""));
+        nasm.ajouteInst(new NasmMov(null, dest, eax, ""));
         return null;
     }
 
