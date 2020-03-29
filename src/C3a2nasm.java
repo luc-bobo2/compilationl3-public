@@ -84,7 +84,9 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
         esp.colorRegister(Nasm.REG_ESP);
         NasmRegister ebp = nasm.newRegister();
         ebp.colorRegister(Nasm.REG_EBP);
-        nasm.setTempCounter(0);
+
+        if (!inst.val.identif.equals("main"))
+            nasm.setTempCounter(0);
 
         // Set the current function
         this.currentFct = inst.val;
@@ -150,8 +152,8 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
         NasmOperand src = inst.op1.accept(this);
         NasmOperand dest = inst.result.accept(this);
 
-        return null;
         nasm.ajouteInst(new NasmMov(label, dest, src, "Affect"));
+        return dest;
     }
 
     @Override
