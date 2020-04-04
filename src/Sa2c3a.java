@@ -267,11 +267,13 @@ public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
 
     @Override
     public C3aOperand visit(SaDecFonc node) {
-        TsItemFct tsItemFct = table.getFct(node.getNom());
-        c3a.ajouteInst(new C3aInstFBegin(tsItemFct, "Entree de la fonction"));
+        // Début de la fonction
+        c3a.ajouteInst(new C3aInstFBegin(table.getFct(node.getNom()), "Entree de la fonction"));
+        // table locale puis parcours
         tableLocale = table.getTableLocale(node.getNom());
         super.visit(node);
         tableLocale = null;
+        // Fin de la fonction
         c3a.ajouteInst(new C3aInstFEnd("Fin de la fonction"));
         return null;
     }
@@ -285,11 +287,11 @@ public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
     @Override
     public C3aOperand visit(SaVarSimple node) {
         C3aVar var;
+        // si la var n'est pas dans la table globale
         if (table.getVar(node.getNom()) == null) {
-            var = new C3aVar(tableLocale.getVar(node.getNom()), null);
-        } else {
-            var = new C3aVar(table.getVar(node.getNom()), null);
+            return new C3aVar(tableLocale.getVar(node.getNom()), null);
         }
+        var = new C3aVar(table.getVar(node.getNom()), null);
         return var;
     }
 
