@@ -6,9 +6,11 @@ import ts.TsItemFct;
 public class Sa2c3a  extends SaDepthFirstVisitor<C3aOperand> {
 
     private C3a c3a;
+    private Ts table;
     private Ts tableLocale = null;
 
-    public Sa2c3a (SaNode saRoot) {
+    public Sa2c3a (SaNode saRoot, Ts table) {
+        this.table = table;
         this.c3a = new C3a();
         saRoot.accept(this);
     }
