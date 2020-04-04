@@ -95,7 +95,7 @@ public class Compiler
 			nasm.affiche(baseName);
 		}
 		catch(Exception e){
-			System.out.println(e.getMessage());
+			e.printStackTrace();
 			System.exit(1);
 		}
 	}
