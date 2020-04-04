@@ -144,6 +144,13 @@ public class Sa2ts extends SaDepthFirstVisitor <Void> {
 
         _assert(varExist(node.getNom()), CompilerError.CALL_TO_UNDEFINED_VAR);
 
+        TsItemVar localItem = tableLocale.getVar(node.getNom());
+        if (localItem == null) {
+            node.tsItem = tableGlobale.getVar((node.getNom()));
+        } else {
+            node.tsItem = localItem;
+        }
+
         defaultOut(node);
         return null;
     }
@@ -154,6 +161,13 @@ public class Sa2ts extends SaDepthFirstVisitor <Void> {
 
         _assert(tabExist(node.getNom()), CompilerError.CALL_TO_UNDEFINED_TAB);
 
+        TsItemVar localItem = tableLocale.getVar(node.getNom());
+        if (localItem == null) {
+            node.tsItem = tableGlobale.getVar((node.getNom()));
+        } else {
+            node.tsItem = localItem;
+        }
+
         defaultOut(node);
         return null;
     }
@@ -163,6 +177,10 @@ public class Sa2ts extends SaDepthFirstVisitor <Void> {
         defaultIn(node);
 
         _assert(funcExist(node.getNom()), CompilerError.CALL_TO_UNDEFINED_FUNCTION);
+
+        if (node.tsItem == null) {
+            node.tsItem = tableGlobale.getFct(node.getNom());
+        }
 
         defaultOut(node);
         return null;
