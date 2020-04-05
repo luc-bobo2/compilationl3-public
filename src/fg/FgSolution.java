@@ -294,13 +294,10 @@ public class FgSolution {
 				4: end for
 				5: repeat
 				6: for all s do
-				7: in0
-				(s) = in(s)
-				8: out0
-				(s) = out(s)
+				7: in0(s) = in(s)
+				8: out0(s) = out(s)
 				9: in(s) = use(s) ∪ (out(s) − def(s))
-				10: out(n) = ∪s∈succ(s)
-				in(s)
+				10: out(n) = ∪s∈succ(s)in(s)
 				11: end for
 				12: until in0
 				(s) = in(s) et out0
