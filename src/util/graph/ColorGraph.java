@@ -13,7 +13,7 @@ public class ColorGraph {
     public IntSet deborde;          // sommets qui débordent
     public int[] couleur;           // Tableau de couleurs
     public Node[] int2Node;         // Accès rapide au nodes
-    static int NOCOLOR = -1;
+    public static int NOCOLOR = -1;
 
     public ColorGraph(Graph G, int K, int[] phi) {
         this.G = G;
