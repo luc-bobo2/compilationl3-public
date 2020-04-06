@@ -34,47 +34,108 @@ public class ColorGraph {
     }
 
     /**
-     * associe une couleur à tous les sommets se trouvant dans la pile
-     */
-    public void selection() {
-    }
-
-    /**
      * récupère les couleurs des voisins de t
      * @param t Le noeud t
      * @return Les couleurs des voisins
      */
     public IntSet couleursVoisins(int t) {
-        return null;
+        IntSet couleursVoisins = new IntSet(nbVoisins(t));
+        // Parcour les prédécesseurs puis les suivants
+        // Pour chacun on parcours jusqu'à ce qu'il n'y ai tail == null
+        for (NodeList list :  new NodeList[]{int2Node[t].preds, int2Node[t].succs}) {
+            do {
+                if (list.head != null)
+                    couleursVoisins.add(list.head.mykey);
+            } while ((list = list.tail) != null);
+        }
+        return couleursVoisins;
     }
 
     /**
      * recherche une couleur absente de colorSet
-     * @param colorSet
-     * @return
      */
     public int choisisCouleur(IntSet colorSet) {
-        return 0;
+        for (int color = 0; color < colorSet.getSize(); ++color) {
+            if (!colorSet.isMember(color))
+                return color;
+        }
+        return NOCOLOR;
     }
 
     /**
      * calcule le nombre de voisins du sommet t
      */
     public int nbVoisins(int t) {
-        return 0;
+        int nbVoisins = 0;
+        for (NodeList list :  new NodeList[]{int2Node[t].preds, int2Node[t].succs}) {
+            do {
+                if (list.head != null)
+                    ++nbVoisins;
+            } while ((list = list.tail) != null);
+        }
+        return nbVoisins;
     }
 
     /**
-     * simplifie le graphe d'interférence g
-     * la simplification consiste à enlever du graphe les temporaires qui ont moins de k voisins
-     * et à les mettre dans une pile
-     * à la fin du processus, le graphe peut ne pas être vide, il s'agit des temporaires qui ont au moins k voisin
+     * Algorithm 5
      */
-    public int simplification() {
-        return 0;
+    public void simplification() {
+        pile = new Stack<>();
+        int nbPreColore = 0;
+        for (int v : couleur) {
+            if (v != NOCOLOR)
+                ++nbPreColore;
+        }
+        int N = R - nbPreColore;
+
+        boolean modif = true;
+        while (pile.size() != N && modif) {
+            modif = false;
+            for (int s = 0, l = int2Node.length; s < l; ++s) {
+                // Ignore les sommets enlevés
+                if (enleves.isMember(s)) continue;
+
+                if (nbVoisins(s) < K && couleur[s] == NOCOLOR) {
+                    pile.push(s);
+                    enleves.add(s);
+                    modif = true;
+                }
+            }
+        }
     }
 
+    /**
+     * Algorithm 4
+     */
     public void debordement() {
+        while (pile.size() != R) {
+            int s = -1;
+            while (++s < pile.size()) {
+                if (!pile.contains(s))
+                    break;
+            }
+            pile.push(s);
+            enleves.add(s);
+            IntSet tmp = new IntSet(deborde.getSize());
+            tmp.add(s);
+            deborde = deborde.union(tmp);
+            simplification();
+        }
+    }
+
+    /**
+     * Algorithm 6
+     * associe une couleur à tous les sommets se trouvant dans la pile
+     */
+    public void selection() {
+        while (pile.size() > 0) {
+            int s = pile.pop();
+            IntSet C = couleursVoisins(s);
+            if (C.getSize() != K) {
+                IntSet CV = new IntSet(0);
+                couleur[s] = choisisCouleur(CV.minus(C));
+            }
+        }
     }
 
     public void coloration() {
