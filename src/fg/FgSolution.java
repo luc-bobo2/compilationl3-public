@@ -21,6 +21,8 @@ public class FgSolution {
 		this.def = new HashMap<NasmInst, IntSet>();
 		this.in = new HashMap<NasmInst, IntSet>();
 		this.out = new HashMap<NasmInst, IntSet>();
+		new UseAndDef();
+		new InAndOut();
 	}
 
 	public void affiche(String baseFileName) {
@@ -52,240 +54,279 @@ public class FgSolution {
 			}
 		}
 
-		@Override
-		public Void visit(NasmAdd inst) {
+		public void newRegister (NasmInst instruction) {
+			if(instruction.source instanceof NasmRegister || instruction.destination instanceof NasmRegister) {
+				if (instruction.source != null && instruction.source.isGeneralRegister()) {
+					if (((NasmRegister) instruction.source).color != Nasm.REG_EBP && (((NasmRegister) instruction.source).color != Nasm.REG_ESP)) {
+						if (instruction.srcUse) use.get(instruction).add(((NasmRegister) instruction.source).val);
+						if (instruction.srcDef) def.get(instruction).add(((NasmRegister) instruction.source).val);
+					}
+				}
+				if (instruction.destination != null && instruction.destination.isGeneralRegister()) {
+					if (((NasmRegister) instruction.destination).color != Nasm.REG_EBP && (((NasmRegister) instruction.destination).color != Nasm.REG_ESP)) {
+						if (instruction.srcUse) use.get(instruction).add(((NasmRegister) instruction.destination).val);
+						if (instruction.srcDef) def.get(instruction).add(((NasmRegister) instruction.destination).val);
+					}
+				}
+			}
+		}
+
+		public void addRegister (NasmInst inst) {
+		}
+
+		public void createDefUse(NasmInst inst)
+		{
 			def.put(inst,new IntSet(fg.inst2Node.size()));
 			use.put(inst,new IntSet(fg.inst2Node.size()));
+		}
+
+		public void createInOut(NasmInst inst) {
 			in.put(inst,new IntSet(fg.inst2Node.size()));
 			out.put(inst,new IntSet(fg.inst2Node.size()));
+		}
+
+		@Override
+		public Void visit(NasmAdd inst) {
+			createDefUse(inst);
+			newRegister(inst);
+			addRegister(inst);
+			createInOut(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmCall inst) {
-			def.put(inst,new IntSet(fg.inst2Node.size()));
-			use.put(inst,new IntSet(fg.inst2Node.size()));
-			in.put(inst,new IntSet(fg.inst2Node.size()));
-			out.put(inst,new IntSet(fg.inst2Node.size()));
+			createDefUse(inst);
+			newRegister(inst);
+			addRegister(inst);
+			createInOut(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmDiv inst) {
-			def.put(inst,new IntSet(fg.inst2Node.size()));
-			use.put(inst,new IntSet(fg.inst2Node.size()));
-			in.put(inst,new IntSet(fg.inst2Node.size()));
-			out.put(inst,new IntSet(fg.inst2Node.size()));
+			createDefUse(inst);
+			newRegister(inst);
+			addRegister(inst);
+			createInOut(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmJe inst) {
-			def.put(inst,new IntSet(fg.inst2Node.size()));
-			use.put(inst,new IntSet(fg.inst2Node.size()));
-			in.put(inst,new IntSet(fg.inst2Node.size()));
-			out.put(inst,new IntSet(fg.inst2Node.size()));
+			createDefUse(inst);
+			newRegister(inst);
+			addRegister(inst);
+			createInOut(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmJle inst) {
-			def.put(inst,new IntSet(fg.inst2Node.size()));
-			use.put(inst,new IntSet(fg.inst2Node.size()));
-			in.put(inst,new IntSet(fg.inst2Node.size()));
-			out.put(inst,new IntSet(fg.inst2Node.size()));
+			createDefUse(inst);
+			newRegister(inst);
+			addRegister(inst);
+			createInOut(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmJne inst) {
-			def.put(inst,new IntSet(fg.inst2Node.size()));
-			use.put(inst,new IntSet(fg.inst2Node.size()));
-			in.put(inst,new IntSet(fg.inst2Node.size()));
-			out.put(inst,new IntSet(fg.inst2Node.size()));
+			createDefUse(inst);
+			newRegister(inst);
+			addRegister(inst);
+			createInOut(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmMul inst) {
-			def.put(inst,new IntSet(fg.inst2Node.size()));
-			use.put(inst,new IntSet(fg.inst2Node.size()));
-			in.put(inst,new IntSet(fg.inst2Node.size()));
-			out.put(inst,new IntSet(fg.inst2Node.size()));
+			createDefUse(inst);
+			newRegister(inst);
+			addRegister(inst);
+			createInOut(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmOr inst) {
-			def.put(inst,new IntSet(fg.inst2Node.size()));
-			use.put(inst,new IntSet(fg.inst2Node.size()));
-			in.put(inst,new IntSet(fg.inst2Node.size()));
-			out.put(inst,new IntSet(fg.inst2Node.size()));
+			createDefUse(inst);
+			newRegister(inst);
+			addRegister(inst);
+			createInOut(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmCmp inst) {
-			def.put(inst,new IntSet(fg.inst2Node.size()));
-			use.put(inst,new IntSet(fg.inst2Node.size()));
-			in.put(inst,new IntSet(fg.inst2Node.size()));
-			out.put(inst,new IntSet(fg.inst2Node.size()));
+			createDefUse(inst);
+			newRegister(inst);
+			addRegister(inst);
+			createInOut(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmInst inst) {
-			def.put(inst,new IntSet(fg.inst2Node.size()));
-			use.put(inst,new IntSet(fg.inst2Node.size()));
-			in.put(inst,new IntSet(fg.inst2Node.size()));
-			out.put(inst,new IntSet(fg.inst2Node.size()));
+			createDefUse(inst);
+			newRegister(inst);
+			addRegister(inst);
+			createInOut(inst);
 			return null;		}
 
 		@Override
 		public Void visit(NasmJge inst) {
-			def.put(inst,new IntSet(fg.inst2Node.size()));
-			use.put(inst,new IntSet(fg.inst2Node.size()));
-			in.put(inst,new IntSet(fg.inst2Node.size()));
-			out.put(inst,new IntSet(fg.inst2Node.size()));
+			createDefUse(inst);
+			newRegister(inst);
+			addRegister(inst);
+			createInOut(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmJl inst) {
-			def.put(inst,new IntSet(fg.inst2Node.size()));
-			use.put(inst,new IntSet(fg.inst2Node.size()));
-			in.put(inst,new IntSet(fg.inst2Node.size()));
-			out.put(inst,new IntSet(fg.inst2Node.size()));
+			createDefUse(inst);
+			newRegister(inst);
+			addRegister(inst);
+			createInOut(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmNot inst) {
-			def.put(inst,new IntSet(fg.inst2Node.size()));
-			use.put(inst,new IntSet(fg.inst2Node.size()));
-			in.put(inst,new IntSet(fg.inst2Node.size()));
-			out.put(inst,new IntSet(fg.inst2Node.size()));
+			createDefUse(inst);
+			newRegister(inst);
+			addRegister(inst);
+			createInOut(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmPop inst) {
-			def.put(inst,new IntSet(fg.inst2Node.size()));
-			use.put(inst,new IntSet(fg.inst2Node.size()));
-			in.put(inst,new IntSet(fg.inst2Node.size()));
-			out.put(inst,new IntSet(fg.inst2Node.size()));
+			createDefUse(inst);
+			newRegister(inst);
+			addRegister(inst);
+			createInOut(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmRet inst) {
-			def.put(inst,new IntSet(fg.inst2Node.size()));
-			use.put(inst,new IntSet(fg.inst2Node.size()));
-			in.put(inst,new IntSet(fg.inst2Node.size()));
-			out.put(inst,new IntSet(fg.inst2Node.size()));
+			createDefUse(inst);
+			newRegister(inst);
+			addRegister(inst);
+			createInOut(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmXor inst) {
-			def.put(inst,new IntSet(fg.inst2Node.size()));
-			use.put(inst,new IntSet(fg.inst2Node.size()));
-			in.put(inst,new IntSet(fg.inst2Node.size()));
-			out.put(inst,new IntSet(fg.inst2Node.size()));
+			createDefUse(inst);
+			newRegister(inst);
+			addRegister(inst);
+			createInOut(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmAnd inst) {
-			def.put(inst,new IntSet(fg.inst2Node.size()));
-			use.put(inst,new IntSet(fg.inst2Node.size()));
-			in.put(inst,new IntSet(fg.inst2Node.size()));
-			out.put(inst,new IntSet(fg.inst2Node.size()));
+			createDefUse(inst);
+			newRegister(inst);
+			addRegister(inst);
+			createInOut(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmJg inst) {
-			def.put(inst, new IntSet(fg.inst2Node.size()));
-			use.put(inst, new IntSet(fg.inst2Node.size()));
-			in.put(inst, new IntSet(fg.inst2Node.size()));
-			out.put(inst, new IntSet(fg.inst2Node.size()));
+			createDefUse(inst);
+			newRegister(inst);
+			addRegister(inst);
+			createInOut(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmJmp inst) {
-			def.put(inst,new IntSet(fg.inst2Node.size()));
-			use.put(inst,new IntSet(fg.inst2Node.size()));
-			in.put(inst,new IntSet(fg.inst2Node.size()));
-			out.put(inst,new IntSet(fg.inst2Node.size()));
+			createDefUse(inst);
+			newRegister(inst);
+			addRegister(inst);
+			createInOut(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmMov inst) {
-			def.put(inst,new IntSet(fg.inst2Node.size()));
-			use.put(inst,new IntSet(fg.inst2Node.size()));
-			in.put(inst,new IntSet(fg.inst2Node.size()));
-			out.put(inst,new IntSet(fg.inst2Node.size()));
+			createDefUse(inst);
+			newRegister(inst);
+			addRegister(inst);
+			createInOut(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmPush inst) {
-			def.put(inst,new IntSet(fg.inst2Node.size()));
-			use.put(inst,new IntSet(fg.inst2Node.size()));
-			in.put(inst,new IntSet(fg.inst2Node.size()));
-			out.put(inst,new IntSet(fg.inst2Node.size()));
+			createDefUse(inst);
+			newRegister(inst);
+			addRegister(inst);
+			createInOut(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmSub inst) {
-			def.put(inst,new IntSet(fg.inst2Node.size()));
-			use.put(inst,new IntSet(fg.inst2Node.size()));
-			in.put(inst,new IntSet(fg.inst2Node.size()));
-			out.put(inst,new IntSet(fg.inst2Node.size()));
+			createDefUse(inst);
+			newRegister(inst);
+			addRegister(inst);
+			createInOut(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmEmpty inst) {
-			def.put(inst,new IntSet(fg.inst2Node.size()));
-			use.put(inst,new IntSet(fg.inst2Node.size()));
-			in.put(inst,new IntSet(fg.inst2Node.size()));
-			out.put(inst,new IntSet(fg.inst2Node.size()));
+			createDefUse(inst);
+			newRegister(inst);
+			addRegister(inst);
+			createInOut(inst);
 			return null;
 		}
 
-		//TODO A confirmer qu'il ne faut pas renvoyer un null.
+		// A laisser vide
 
 		@Override
 		public Void visit(NasmAddress operand) {
-			// return null;
-			return operand.accept(this);
+			return null;
 		}
 
 		@Override
 		public Void visit(NasmConstant operand) {
-			// return null;
-			return operand.accept(this);
+			return null;
 		}
 
 		@Override
 		public Void visit(NasmLabel operand) {
-			// return null;
-			return operand.accept(this);
+			return null;
 		}
 
 		@Override
 		public Void visit(NasmRegister operand) {
-			// return null;
-			return operand.accept(this);
-		}
+			return null; }
 	}
 
 	private class InAndOut implements NasmVisitor<Void> {
+
+		// Permet d'iterer
+		private boolean conditionSortie = false;
+		public InAndOut() {
+			while (!conditionSortie) {
+				// sortie après la boucle si tout va bien, sinon conditionSortie = faux à la fin du calcul iteratif
+				conditionSortie = true;
+				for (NasmInst instructions : nasm.listeInst) {
+					instructions.accept(this);
+				}
+				iterNum++;
+			}
+		}
 
 		public void calculIteratif (NasmInst inst) {
 			/*  1: for all s do
@@ -304,127 +345,168 @@ public class FgSolution {
 				(s) = out(s), ∀s
 			 */
 
-				IntSet outCopy = out.get(inst).copy();
-				IntSet inCopy = in.get(inst).copy();
-				IntSet resultTemp = use.get(inst).union(out.get(inst).minus(def.get(inst)));
+			IntSet inCopy = in.get(inst).copy();
+			IntSet outCopy = out.get(inst).copy();
+			// Use copy car bug sinon
+			IntSet useCopy = use.get(inst).copy();
+			IntSet inResult = useCopy.union(out.get(inst).minus(def.get(inst)));
+			in.put(inst, inResult);
+
+			IntSet outResult = new IntSet(fg.inst2Node.size());
+			NodeList list = fg.inst2Node.get(inst).succ();
+
+			while(list != null) {
+				outResult.union(in.get(fg.node2Inst.get(list.head)));
+				list = list.tail;
+			}
+
+			out.put(inst,outResult);
+
+			if(!inCopy.equal(inResult) || !outCopy.equal(outResult)) conditionSortie = false;
 
 		}
 
-		
+
 		@Override
 		public Void visit(NasmAdd inst) {
+			calculIteratif(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmCall inst) {
+			calculIteratif(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmDiv inst) {
+			calculIteratif(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmJe inst) {
+			calculIteratif(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmJle inst) {
+			calculIteratif(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmJne inst) {
+			calculIteratif(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmMul inst) {
+			calculIteratif(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmOr inst) {
+			calculIteratif(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmCmp inst) {
+			calculIteratif(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmInst inst) {
+			calculIteratif(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmJge inst) {
+			calculIteratif(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmJl inst) {
+			calculIteratif(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmNot inst) {
+			calculIteratif(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmPop inst) {
+			calculIteratif(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmRet inst) {
+			calculIteratif(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmXor inst) {
+			calculIteratif(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmAnd inst) {
+			calculIteratif(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmJg inst) {
+			calculIteratif(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmJmp inst) {
+			calculIteratif(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmMov inst) {
+			calculIteratif(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmPush inst) {
+			calculIteratif(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmSub inst) {
+			calculIteratif(inst);
 			return null;
 		}
 
 		@Override
 		public Void visit(NasmEmpty inst) {
+			calculIteratif(inst);
 			return null;
 		}
+
+
+		// A laisser vide
 
 		@Override
 		public Void visit(NasmAddress operand) {
@@ -448,4 +530,4 @@ public class FgSolution {
 	}
 }
 
-    
+
