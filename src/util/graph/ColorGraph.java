@@ -11,6 +11,7 @@ public class ColorGraph {
     private Stack<Integer> pile;
     public IntSet enleves;          // sommets enlevés
     public IntSet deborde;          // sommets qui débordent
+    public IntSet C;
     public int[] couleur;           // Tableau de couleurs
     public Node[] int2Node;         // Accès rapide au nodes
     public static int NOCOLOR = -1;
@@ -23,6 +24,10 @@ public class ColorGraph {
         couleur = new int[R];
         enleves = new IntSet(R);
         deborde = new IntSet(R);
+        C = new IntSet(K+1);
+        for (int i = 1; i <= K; ++i) {
+            C.add(i);
+        }
         int2Node = G.nodeArray();
         for (int v = 0; v < R; v++) {
             int preColor = phi[v];
@@ -59,7 +64,7 @@ public class ColorGraph {
             if (!colorSet.isMember(color))
                 return color;
         }
-        return NOCOLOR;
+        throw new Error("no color available");
     }
 
     /**
@@ -74,6 +79,13 @@ public class ColorGraph {
             } while ((list = list.tail) != null);
         }
         return nbVoisins;
+    }
+
+    private int choisis_sommet() {
+        for (int i = 0; i < pile.size(); ++i) {
+            if (!pile.contains(i)) return i;
+        }
+        throw new Error("auncun sommet");
     }
 
     /**
@@ -108,17 +120,20 @@ public class ColorGraph {
      * Algorithm 4
      */
     public void debordement() {
+        // deborde←∅
+        deborde = new IntSet(R);
         while (pile.size() != R) {
-            int s = -1;
-            while (++s < pile.size()) {
-                if (!pile.contains(s))
-                    break;
-            }
+            // s←choisis_sommet
+            int s = choisis_sommet();
+            // empile(s)
             pile.push(s);
+            //S←S−{s}
             enleves.add(s);
+            // deborde=deborde∪{s}
             IntSet tmp = new IntSet(deborde.getSize());
             tmp.add(s);
             deborde = deborde.union(tmp);
+            // Simplifie
             simplification();
         }
     }
@@ -130,10 +145,9 @@ public class ColorGraph {
     public void selection() {
         while (pile.size() > 0) {
             int s = pile.pop();
-            IntSet C = couleursVoisins(s);
-            if (C.getSize() != K) {
-                IntSet CV = new IntSet(0);
-                couleur[s] = choisisCouleur(CV.minus(C));
+            IntSet CV = couleursVoisins(s);
+            if (CV.getSize() != K) {
+                couleur[s] = choisisCouleur(this.C.minus(CV));
             }
         }
     }
