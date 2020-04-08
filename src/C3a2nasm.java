@@ -21,9 +21,9 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
     }
 
     private void init() {
-        NasmRegister eax = nasm.newRegister();
+        NasmRegister eax = new NasmRegister(Nasm.REG_EAX);
         eax.colorRegister(Nasm.REG_EAX);
-        NasmRegister ebx = nasm.newRegister();
+        NasmRegister ebx = new NasmRegister(Nasm.REG_EBX);
         ebx.colorRegister(Nasm.REG_EBX);
         nasm.setTempCounter(0);
 
@@ -60,7 +60,7 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
         NasmLabel label = getLabel(inst);
         NasmOperand address = inst.op1.accept(this);
 
-        NasmRegister esp = nasm.newRegister();
+        NasmRegister esp = new NasmRegister(Nasm.REG_ESP);
         esp.colorRegister(Nasm.REG_ESP);
         nasm.ajouteInst(new NasmSub(label, esp, new NasmConstant(4), "allocation mémoire pour la valeur de retour"));
         nasm.ajouteInst(new NasmCall(label, address, ""));
@@ -80,13 +80,13 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
     @Override
     public NasmOperand visit(C3aInstFBegin inst) {
         NasmLabel label = new NasmLabel(inst.val.identif);
-        NasmRegister esp = nasm.newRegister();
+        NasmRegister esp = new NasmRegister(Nasm.REG_ESP);
         esp.colorRegister(Nasm.REG_ESP);
-        NasmRegister ebp = nasm.newRegister();
+        NasmRegister ebp = new NasmRegister(Nasm.REG_EBP);
         ebp.colorRegister(Nasm.REG_EBP);
 
-        if (!inst.val.identif.equals("main"))
-            nasm.setTempCounter(0);
+        /*if (!inst.val.identif.equals("main"))
+            nasm.setTempCounter(0);*/
 
         // Set the current function
         this.currentFct = inst.val;
@@ -134,7 +134,7 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
         NasmOperand op2 = inst.op2.accept(this);
         NasmOperand dest = inst.result.accept(this);
 
-        NasmRegister eax = nasm.newRegister();
+        NasmRegister eax = new NasmRegister(Nasm.REG_EAX);
         eax.colorRegister(Nasm.REG_EAX);
 
         NasmRegister tmp = nasm.newRegister();
@@ -160,9 +160,9 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
     public NasmOperand visit(C3aInstFEnd inst) {
         NasmLabel label = getLabel(inst);
 
-        NasmRegister esp = nasm.newRegister();
+        NasmRegister esp = new NasmRegister(Nasm.REG_ESP);
         esp.colorRegister(Nasm.REG_ESP);
-        NasmRegister ebp = nasm.newRegister();
+        NasmRegister ebp = new NasmRegister(Nasm.REG_EBP);
         ebp.colorRegister(Nasm.REG_EBP);
 
         NasmConstant localVarSize = new NasmConstant(4*this.currentFct.getTable().nbVar());
@@ -171,7 +171,7 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
         nasm.ajouteInst(new NasmRet(null, ""));
 
         this.currentFct = null;
-        this.nasm.setTempCounter(0);
+        //this.nasm.setTempCounter(0);
         return null;
     }
 
@@ -251,7 +251,7 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
         NasmLabel label = getLabel(inst);
         NasmOperand val = inst.op1.accept(this);
 
-        NasmRegister ebp = nasm.newRegister();
+        NasmRegister ebp = new NasmRegister(Nasm.REG_EBP);
         ebp.colorRegister(Nasm.REG_EBP);
         NasmAddress retour = new NasmAddress(ebp, '+', new NasmConstant(2));
 
@@ -264,7 +264,7 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
         NasmLabel label = getLabel(inst);
 
         NasmOperand src = inst.op1.accept(this);
-        NasmRegister eax = nasm.newRegister();
+        NasmRegister eax = new NasmRegister(Nasm.REG_EAX);
         eax.colorRegister(Nasm.REG_EAX);
 
         nasm.ajouteInst(new NasmMov(label, eax, src,"Write 1"));
@@ -300,13 +300,13 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
         final boolean isGlobal = this.tableGlobale.variables.containsKey(oper.item.identif);
 
         if (oper.item.isParam) {
-            NasmRegister ebp = nasm.newRegister();
-            ebp.colorRegister(Nasm.REG_EBP);
+            NasmRegister ebp = new NasmRegister(Nasm.REG_EBP);
+        ebp.colorRegister(Nasm.REG_EBP);
 
             return new NasmAddress(ebp, '+', new NasmConstant(2+(this.currentFct.nbArgs - oper.item.adresse)));
         } else if (!isGlobal) {
-            NasmRegister ebp = nasm.newRegister();
-            ebp.colorRegister(Nasm.REG_EBP);
+            NasmRegister ebp = new NasmRegister(Nasm.REG_EBP);
+        ebp.colorRegister(Nasm.REG_EBP);
 
             return new NasmAddress(ebp, '-', new NasmConstant(1+oper.item.adresse));
         } else {
