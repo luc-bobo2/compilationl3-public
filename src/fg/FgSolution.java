@@ -292,11 +292,12 @@ public class FgSolution {
 		public InAndOut() {
 			while (!conditionSortie) {
 				// sortie après la boucle si tout va bien, sinon conditionSortie = faux à la fin du calcul iteratif
+				iterNum++;
 				conditionSortie = true;
 				for (NasmInst instructions : nasm.listeInst) {
 					instructions.accept(this);
 				}
-				iterNum++;
+
 			}
 		}
 
@@ -317,12 +318,19 @@ public class FgSolution {
 				(s) = out(s), ∀s
 			 */
 
+			// Les 4 premières instructions sont faites dans la classe DefAndUse
+			// 5 et 6 est le while + for  dans le constructeur
+			//7
 			IntSet inCopy = in.get(inst).copy();
+			//8
 			IntSet outCopy = out.get(inst).copy();
 			// Use copy car bug sinon
 			IntSet useCopy = use.get(inst).copy();
-			IntSet inResult = useCopy.union(out.get(inst).minus(def.get(inst)));
+			//9
+			IntSet inResult = useCopy.union(out.get(inst).copy().minus(def.get(inst)));
 			in.put(inst, inResult);
+
+			//10
 
 			IntSet outResult = new IntSet(fg.inst2Node.size());
 			NodeList list = fg.inst2Node.get(inst).succ();
@@ -334,6 +342,7 @@ public class FgSolution {
 
 			out.put(inst,outResult);
 
+			//12
 			if(!inCopy.equal(inResult) || !outCopy.equal(outResult)) conditionSortie = false;
 
 		}
