@@ -48,31 +48,26 @@ public class FgSolution {
 	private class UseAndDef implements NasmVisitor<Void> {
 
 		public UseAndDef() {
-			// parcours
+			// Parcours des instructions
 			for (NasmInst instructions : nasm.listeInst) {
 				instructions.accept(this);
 			}
 		}
 
 		public void newRegister (NasmInst inst) {
-			if (inst.source instanceof NasmRegister) {
+
+			if (inst.source instanceof NasmRegister && inst.source.isGeneralRegister()) {
 				final NasmRegister source = (NasmRegister) inst.source;
-				if (source.isGeneralRegister()) {
-					if (inst.srcUse) use.get(inst).add(source.val);
-					if (inst.srcDef) def.get(inst).add(source.val);
-				}
+				if (inst.srcUse) use.get(inst).add(source.val);
+				if (inst.srcDef) def.get(inst).add(source.val);
 			}
 
 			if (inst.destination instanceof NasmRegister && inst.destination.isGeneralRegister()) {
 				final NasmRegister destination = (NasmRegister) inst.destination;
-				if (destination.isGeneralRegister()) {
-					if (inst.destDef) def.get(inst).add(destination.val);
-					if (inst.destUse) use.get(inst).add(destination.val);
-				}
+				if (inst.destDef) def.get(inst).add(destination.val);
+				if (inst.destUse) use.get(inst).add(destination.val);
 			}
-		}
 
-		public void addRegister (NasmInst inst) {
 		}
 
 		public void createDefUse(NasmInst inst)
@@ -90,7 +85,6 @@ public class FgSolution {
 		public Void visit(NasmAdd inst) {
 			createDefUse(inst);
 			newRegister(inst);
-			addRegister(inst);
 			createInOut(inst);
 			return null;
 		}
@@ -99,7 +93,6 @@ public class FgSolution {
 		public Void visit(NasmCall inst) {
 			createDefUse(inst);
 			newRegister(inst);
-			addRegister(inst);
 			createInOut(inst);
 			return null;
 		}
@@ -108,7 +101,6 @@ public class FgSolution {
 		public Void visit(NasmDiv inst) {
 			createDefUse(inst);
 			newRegister(inst);
-			addRegister(inst);
 			createInOut(inst);
 			return null;
 		}
@@ -117,7 +109,6 @@ public class FgSolution {
 		public Void visit(NasmJe inst) {
 			createDefUse(inst);
 			newRegister(inst);
-			addRegister(inst);
 			createInOut(inst);
 			return null;
 		}
@@ -126,7 +117,6 @@ public class FgSolution {
 		public Void visit(NasmJle inst) {
 			createDefUse(inst);
 			newRegister(inst);
-			addRegister(inst);
 			createInOut(inst);
 			return null;
 		}
@@ -135,7 +125,6 @@ public class FgSolution {
 		public Void visit(NasmJne inst) {
 			createDefUse(inst);
 			newRegister(inst);
-			addRegister(inst);
 			createInOut(inst);
 			return null;
 		}
@@ -144,7 +133,6 @@ public class FgSolution {
 		public Void visit(NasmMul inst) {
 			createDefUse(inst);
 			newRegister(inst);
-			addRegister(inst);
 			createInOut(inst);
 			return null;
 		}
@@ -153,7 +141,6 @@ public class FgSolution {
 		public Void visit(NasmOr inst) {
 			createDefUse(inst);
 			newRegister(inst);
-			addRegister(inst);
 			createInOut(inst);
 			return null;
 		}
@@ -162,7 +149,6 @@ public class FgSolution {
 		public Void visit(NasmCmp inst) {
 			createDefUse(inst);
 			newRegister(inst);
-			addRegister(inst);
 			createInOut(inst);
 			return null;
 		}
@@ -171,7 +157,6 @@ public class FgSolution {
 		public Void visit(NasmInst inst) {
 			createDefUse(inst);
 			newRegister(inst);
-			addRegister(inst);
 			createInOut(inst);
 			return null;		}
 
@@ -179,7 +164,6 @@ public class FgSolution {
 		public Void visit(NasmJge inst) {
 			createDefUse(inst);
 			newRegister(inst);
-			addRegister(inst);
 			createInOut(inst);
 			return null;
 		}
@@ -188,7 +172,6 @@ public class FgSolution {
 		public Void visit(NasmJl inst) {
 			createDefUse(inst);
 			newRegister(inst);
-			addRegister(inst);
 			createInOut(inst);
 			return null;
 		}
@@ -197,7 +180,6 @@ public class FgSolution {
 		public Void visit(NasmNot inst) {
 			createDefUse(inst);
 			newRegister(inst);
-			addRegister(inst);
 			createInOut(inst);
 			return null;
 		}
@@ -206,7 +188,6 @@ public class FgSolution {
 		public Void visit(NasmPop inst) {
 			createDefUse(inst);
 			newRegister(inst);
-			addRegister(inst);
 			createInOut(inst);
 			return null;
 		}
@@ -215,7 +196,6 @@ public class FgSolution {
 		public Void visit(NasmRet inst) {
 			createDefUse(inst);
 			newRegister(inst);
-			addRegister(inst);
 			createInOut(inst);
 			return null;
 		}
@@ -224,7 +204,6 @@ public class FgSolution {
 		public Void visit(NasmXor inst) {
 			createDefUse(inst);
 			newRegister(inst);
-			addRegister(inst);
 			createInOut(inst);
 			return null;
 		}
@@ -233,7 +212,6 @@ public class FgSolution {
 		public Void visit(NasmAnd inst) {
 			createDefUse(inst);
 			newRegister(inst);
-			addRegister(inst);
 			createInOut(inst);
 			return null;
 		}
@@ -242,7 +220,6 @@ public class FgSolution {
 		public Void visit(NasmJg inst) {
 			createDefUse(inst);
 			newRegister(inst);
-			addRegister(inst);
 			createInOut(inst);
 			return null;
 		}
@@ -251,7 +228,6 @@ public class FgSolution {
 		public Void visit(NasmJmp inst) {
 			createDefUse(inst);
 			newRegister(inst);
-			addRegister(inst);
 			createInOut(inst);
 			return null;
 		}
@@ -260,7 +236,6 @@ public class FgSolution {
 		public Void visit(NasmMov inst) {
 			createDefUse(inst);
 			newRegister(inst);
-			addRegister(inst);
 			createInOut(inst);
 			return null;
 		}
@@ -269,7 +244,6 @@ public class FgSolution {
 		public Void visit(NasmPush inst) {
 			createDefUse(inst);
 			newRegister(inst);
-			addRegister(inst);
 			createInOut(inst);
 			return null;
 		}
@@ -278,7 +252,6 @@ public class FgSolution {
 		public Void visit(NasmSub inst) {
 			createDefUse(inst);
 			newRegister(inst);
-			addRegister(inst);
 			createInOut(inst);
 			return null;
 		}
@@ -287,7 +260,6 @@ public class FgSolution {
 		public Void visit(NasmEmpty inst) {
 			createDefUse(inst);
 			newRegister(inst);
-			addRegister(inst);
 			createInOut(inst);
 			return null;
 		}
@@ -310,8 +282,7 @@ public class FgSolution {
 		}
 
 		@Override
-		public Void visit(NasmRegister operand) {
-			return null; }
+		public Void visit(NasmRegister operand) { return null; }
 	}
 
 	private class InAndOut implements NasmVisitor<Void> {
