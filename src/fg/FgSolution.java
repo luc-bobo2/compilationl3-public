@@ -54,19 +54,20 @@ public class FgSolution {
 			}
 		}
 
-		public void newRegister (NasmInst instruction) {
-			if(instruction.source instanceof NasmRegister || instruction.destination instanceof NasmRegister) {
-				if (instruction.source != null && instruction.source.isGeneralRegister()) {
-					if (((NasmRegister) instruction.source).color != Nasm.REG_EBP && (((NasmRegister) instruction.source).color != Nasm.REG_ESP)) {
-						if (instruction.srcUse) use.get(instruction).add(((NasmRegister) instruction.source).val);
-						if (instruction.srcDef) def.get(instruction).add(((NasmRegister) instruction.source).val);
-					}
+		public void newRegister (NasmInst inst) {
+			if (inst.source instanceof NasmRegister) {
+				final NasmRegister source = (NasmRegister) inst.source;
+				if (source.isGeneralRegister()) {
+					if (inst.srcUse) use.get(inst).add(source.val);
+					if (inst.srcDef) def.get(inst).add(source.val);
 				}
-				if (instruction.destination != null && instruction.destination.isGeneralRegister()) {
-					if (((NasmRegister) instruction.destination).color != Nasm.REG_EBP && (((NasmRegister) instruction.destination).color != Nasm.REG_ESP)) {
-						if (instruction.srcUse) use.get(instruction).add(((NasmRegister) instruction.destination).val);
-						if (instruction.srcDef) def.get(instruction).add(((NasmRegister) instruction.destination).val);
-					}
+			}
+
+			if (inst.destination instanceof NasmRegister && inst.destination.isGeneralRegister()) {
+				final NasmRegister destination = (NasmRegister) inst.destination;
+				if (destination.isGeneralRegister()) {
+					if (inst.destDef) def.get(inst).add(destination.val);
+					if (inst.destUse) use.get(inst).add(destination.val);
 				}
 			}
 		}
