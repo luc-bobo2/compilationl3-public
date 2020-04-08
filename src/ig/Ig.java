@@ -3,7 +3,6 @@ package ig;
 import fg.FgSolution;
 import nasm.Nasm;
 import nasm.NasmInst;
-import util.graph.ColorGraph;
 import util.graph.Graph;
 import util.graph.Node;
 import util.graph.NodeList;
@@ -60,10 +59,9 @@ public class Ig {
     }
 
     public int[] getPrecoloredTemporaries() {
-        int[] phi = new int[graph.nodeCount()];
-        Arrays.fill(phi, ColorGraph.NOCOLOR);
-        ColorGraph colorGraph = new ColorGraph(graph, 4, phi);
-        return colorGraph.couleur;
+        int[] phi = new int[int2Node.length];
+        Arrays.fill(phi, 0);
+        return phi;
     }
 
     public void allocateRegisters() {
