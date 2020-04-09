@@ -25,7 +25,7 @@ public class Ig {
         this.fgs = fgs;
         this.graph = new Graph();
         this.nasm = fgs.nasm;
-        this.regNb = this.nasm.getTempCounter();
+        this.regNb = this.nasm.getTempCounter()+1;
         this.int2Node = new Node[regNb];
         this.construction();
     }

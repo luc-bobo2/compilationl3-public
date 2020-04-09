@@ -61,12 +61,12 @@ public class FgSolution {
 				if (inst.srcUse) use.get(inst).add(source.val);
 				if (inst.srcDef) def.get(inst).add(source.val);
 			}
-				if (inst.destination instanceof NasmRegister && inst.destination.isGeneralRegister()) {
-					final NasmRegister destination = (NasmRegister) inst.destination;
-					if (inst.destDef) def.get(inst).add(destination.val);
-					if (inst.destUse) use.get(inst).add(destination.val);
-				}
+			if (inst.destination instanceof NasmRegister && inst.destination.isGeneralRegister()) {
+				final NasmRegister destination = (NasmRegister) inst.destination;
+				if (inst.destDef) def.get(inst).add(destination.val);
+				if (inst.destUse) use.get(inst).add(destination.val);
 			}
+		}
 
 
 		public void createDefUse(NasmInst inst)

@@ -82,8 +82,8 @@ public class ColorGraph {
     }
 
     private int choisis_sommet() {
-        for (int i = 0; i < pile.size(); ++i) {
-            if (!pile.contains(i)) return i;
+        for (int i = 0; i < R; ++i) {
+            if (!pile.contains(i) && !enleves.isMember(i)) return i;
         }
         throw new Error("auncun sommet");
     }

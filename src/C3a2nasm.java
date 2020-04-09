@@ -60,7 +60,7 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
         NasmLabel label = getLabel(inst);
         NasmOperand address = inst.op1.accept(this);
 
-        NasmRegister esp = nasm.newRegister();
+        NasmRegister esp =  new NasmRegister(Nasm.REG_ESP);
         esp.colorRegister(Nasm.REG_ESP);
         nasm.ajouteInst(new NasmSub(label, esp, new NasmConstant(4), "allocation mémoire pour la valeur de retour"));
         nasm.ajouteInst(new NasmCall(label, address, ""));
@@ -80,9 +80,9 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
     @Override
     public NasmOperand visit(C3aInstFBegin inst) {
         NasmLabel label = new NasmLabel(inst.val.identif);
-        NasmRegister esp = nasm.newRegister();
+        NasmRegister esp =  new NasmRegister(Nasm.REG_ESP);
         esp.colorRegister(Nasm.REG_ESP);
-        NasmRegister ebp = nasm.newRegister();
+        NasmRegister ebp = new NasmRegister(Nasm.REG_EBP);
         ebp.colorRegister(Nasm.REG_EBP);
 
         /*if (!inst.val.identif.equals("main"))
@@ -160,9 +160,9 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
     public NasmOperand visit(C3aInstFEnd inst) {
         NasmLabel label = getLabel(inst);
 
-        NasmRegister esp = nasm.newRegister();
+        NasmRegister esp =  new NasmRegister(Nasm.REG_ESP);
         esp.colorRegister(Nasm.REG_ESP);
-        NasmRegister ebp = nasm.newRegister();
+        NasmRegister ebp = new NasmRegister(Nasm.REG_EBP);
         ebp.colorRegister(Nasm.REG_EBP);
 
         NasmConstant localVarSize = new NasmConstant(4*this.currentFct.getTable().nbVar());
@@ -251,7 +251,7 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
         NasmLabel label = getLabel(inst);
         NasmOperand val = inst.op1.accept(this);
 
-        NasmRegister ebp = nasm.newRegister();
+        NasmRegister ebp = new NasmRegister(Nasm.REG_EBP);
         ebp.colorRegister(Nasm.REG_EBP);
         NasmAddress retour = new NasmAddress(ebp, '+', new NasmConstant(2));
 
