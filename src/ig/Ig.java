@@ -3,6 +3,8 @@ package ig;
 import fg.FgSolution;
 import nasm.Nasm;
 import nasm.NasmInst;
+import nasm.NasmRegister;
+import util.graph.ColorGraph;
 import util.graph.Graph;
 import util.graph.Node;
 import util.graph.NodeList;
@@ -59,12 +61,40 @@ public class Ig {
     }
 
     public int[] getPrecoloredTemporaries() {
-        int[] phi = new int[int2Node.length];
-        Arrays.fill(phi, 0);
-        return phi;
+        int[] couleur = new int[int2Node.length];
+        Arrays.fill(couleur, 0);
+
+        for (NasmInst inst : nasm.listeInst) {
+            if (inst.source instanceof NasmRegister && inst.source.isGeneralRegister()) {
+                if (((NasmRegister) inst.source).color != Nasm.REG_UNK) {
+                    couleur[((NasmRegister) inst.source).val] = ((NasmRegister) inst.source).color;
+                }
+            }
+            if (inst.destination instanceof NasmRegister && inst.destination.isGeneralRegister()) {
+                if (((NasmRegister) inst.destination).color != Nasm.REG_UNK) {
+                    couleur[((NasmRegister) inst.destination).val] = ((NasmRegister) inst.destination).color;
+                }
+            }
+        }
+
+        return couleur;
     }
 
     public void allocateRegisters() {
+        ColorGraph colorGraph = new ColorGraph(graph, 4, getPrecoloredTemporaries());
+        colorGraph.coloration();
+
+        for (NasmInst inst : nasm.listeInst) {
+            if (inst.source instanceof NasmRegister && inst.source.isGeneralRegister()) {
+                final int couleur = colorGraph.couleur[((NasmRegister) inst.source).val];
+                ((NasmRegister) inst.source).colorRegister(couleur);
+            }
+
+            if (inst.destination instanceof NasmRegister && inst.destination.isGeneralRegister()) {
+                final int couleur = colorGraph.couleur[((NasmRegister) inst.destination).val];
+                ((NasmRegister) inst.destination).colorRegister(couleur);
+            }
+        }
     }
 
     public void affiche(String baseFileName) {
