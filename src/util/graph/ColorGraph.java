@@ -48,6 +48,7 @@ public class ColorGraph {
         // Parcour les prédécesseurs puis les suivants
         // Pour chacun on parcours jusqu'à ce qu'il n'y ai tail == null
         for (NodeList list :  new NodeList[]{int2Node[t].preds, int2Node[t].succs}) {
+            if (list == null) continue;
             do {
                 if (list.head != null)
                     couleursVoisins.add(list.head.mykey);
@@ -73,6 +74,7 @@ public class ColorGraph {
     public int nbVoisins(int t) {
         int nbVoisins = 0;
         for (NodeList list :  new NodeList[]{int2Node[t].preds, int2Node[t].succs}) {
+            if (list == null) continue;
             do {
                 if (list.head != null)
                     ++nbVoisins;
@@ -92,7 +94,6 @@ public class ColorGraph {
      * Algorithm 5
      */
     public void simplification() {
-        pile = new Stack<>();
         int nbPreColore = 0;
         for (int v : couleur) {
             if (v != NOCOLOR)

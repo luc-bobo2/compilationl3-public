@@ -32,29 +32,38 @@ public class Ig {
 
     public void construction() {
         // Creation des noeuds
+        // S←{1,...R}
         for (int i = 0; i < this.regNb; ++i) {
-            this.int2Node[i] = graph.newNode();
+            graph.newNode();
         }
+        int2Node = graph.nodeArray();
 
         for (NasmInst inst : nasm.listeInst) {
             IntSet in = fgs.in.get(inst);
             IntSet out = fgs.out.get(inst);
 
-            // Parcours les arrêtes en entrée pour trouver celles qui interfèrent
-            for (int r = 0; r < in.getSize(); ++r) {
-                if (!in.isMember(r)) continue;
-                for (int r2 = 0; r2 < in.getSize(); ++r2) {
-                    if (r == r2 || !in.isMember(r2)) continue;
-                    graph.addEdge(int2Node[r], int2Node[r2]);
+            if (!in.isEmpty()) {
+                // Parcours les arrêtes en entrée pour trouver celles qui interfèrent
+                for (int r = 0; r < in.getSize(); ++r) {
+                    if (!in.isMember(r)) continue;
+                    for (int r2 = 0; r2 < in.getSize(); ++r2) {
+                        if (r == r2 || !in.isMember(r2)) continue;
+                        graph.addEdge(int2Node[r], int2Node[r2]);
+                    }
+                    in.remove(r);
                 }
             }
 
-            // Parcours les arrêtes en sortie pour trouver celles qui interfèrent
-            for (int r = 0; r < out.getSize(); ++r) {
-                if (!out.isMember(r)) continue;
-                for (int r2 = 0; r2 < out.getSize(); ++r2) {
-                    if (r == r2 || !out.isMember(r2)) continue;
-                    graph.addEdge(int2Node[r], int2Node[r2]);
+            if (!out.isEmpty()) {
+                // Parcours les arrêtes en sortie pour trouver celles qui interfèrent
+                for (int r = 0; r < out.getSize(); ++r) {
+                    if (!out.isMember(r)) continue;
+                    for (int r2 = 0; r2 < out.getSize(); ++r2) {
+                        if (r == r2 || !out.isMember(r2)) continue;
+                        out.remove(r2);
+                        graph.addEdge(int2Node[r], int2Node[r2]);
+                    }
+                    out.remove(r);
                 }
             }
         }
