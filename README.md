@@ -11,7 +11,6 @@ Concernant le code, voici ce qui est **totalement fonctionnel** :
 
 Pour ces fichiers, 100% des tests avec evaluate.py sont validés.
 
-* Pour FGSolution, bien que la plupart des fichiers correspondent à ceux dans fgs-ref; Certains fichiers generés sont différents de ceux  dans fgs-ref (par exemple div1.l et div2.l) mais ne sont néanmoins pas faux.
+* Pour **FGSolution**, bien que la plupart des fichiers correspondent à ceux dans fgs-ref; Certains fichiers generés sont différents de ceux  dans fgs-ref (par exemple div1.l et div2.l) mais ne sont néanmoins pas faux.
 
-
-Enfin, pour le dernier TP: **IG** seulent 67% environ du code Nasm est validé et compile correctement.
+Enfin, pour le dernier TP (**IG**), environ 67%  du code Nasm est validé et compile correctement.
