@@ -8,6 +8,7 @@ En dehors du code fournis par notre professeur et nos chargés de TPs (commits v
 
 Concernant le code, voici ce qui est **totalement fonctionnel** :
 - Grammaire, SC, SA, TS, C3A, Pre-NASM, FG, FGSolution*
+
 100% des tests avec evaluate.py sont validés.
 *Pour FGSolution, la plupart des fichiers correspondent à ceux dans fgs-ref. Néanmoins, certains fichiers generés sont différents de ceux  dans fgs-ref (par exemple div1.l et div2.l) mais ne sont néanmoins pas faux.
 
